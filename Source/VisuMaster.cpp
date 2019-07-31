@@ -64,6 +64,10 @@ VisuMaster::VisuMaster(){
     visu_range = (float)ControllerSingleton::nrOfVisualizedKeys/12.0f;
 
     setEnterTime();
+    
+    File f = File("/Users/expert239/Desktop/Copter3.png");
+    
+    bla = ImageFileFormat::loadFrom(f);
 }
 
 VisuMaster::~VisuMaster()
@@ -190,6 +194,7 @@ void VisuMaster::paint (Graphics& g)
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);
     //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
+    g.drawImageAt(bla, 0,0);
     
     //RENDER******************RENDER
     /*

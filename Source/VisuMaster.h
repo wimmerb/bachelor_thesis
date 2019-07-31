@@ -36,7 +36,9 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
+    
     float currMouseY;
+    Image bla;
     
     float visu_lowerBound;
     float visu_range;
