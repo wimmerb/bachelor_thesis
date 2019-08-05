@@ -49,12 +49,13 @@ bool ControllerSingleton::snapPitchToGrid = true;
 
 //ChordVisualisation
 bool * ControllerSingleton::chords_visuArray = new bool [9]{true,true,true,true,false,false,false,true,false};
+bool ControllerSingleton::chords_visualizeAsDots = true;
+bool ControllerSingleton::chords_visualizeAsKeys = false;
 bool ControllerSingleton::chords_visualizeWithColours = true;
 bool ControllerSingleton::chords_fadeOutHorizontal = false;
 
 //BasicPianoVisualisation
 bool ControllerSingleton::basicp_highlightBasicPiano = true;
-bool ControllerSingleton::basicp_inFront = true;
 bool ControllerSingleton::basicp_visualizeWholeScale = true;
 bool ControllerSingleton::basicP_visualizeWithColours = true;
 //==========================================================================

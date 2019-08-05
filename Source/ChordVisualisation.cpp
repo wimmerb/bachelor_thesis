@@ -127,10 +127,10 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
         float x = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+c.positionX))*width;
         float h = height/ControllerSingleton::nrOfVisualizedKeys;
         float w = (1.0f/ControllerSingleton::barsPerScreen*c.lengthInBars)*width-10.0f;
-        if(layer == 1){
-            g.setColour(Colours::turquoise.interpolatedWith(Colour::fromRGBA(0,0,0,0), 0.8f));
-            g.fillRect(x,0.0f,w,height);
-        }
+//        if(layer == 1){
+//            g.setColour(Colours::turquoise.interpolatedWith(Colour::fromRGBA(0,0,0,0), 0.8f));
+//            g.fillRect(x,0.0f,w,height);
+//        }
     
         for (int i = lowestKeyNr; i <= highestKeyNr; i++){
             float y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height);
@@ -142,8 +142,10 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     float y2 = y-h2/2.0f;
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
-                    if(layer == 1)
-                        visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
+                    if(layer == 1){
+                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
+                        
+                    }
                     //if(layer == 0)
                         //visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
 
@@ -160,10 +162,17 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     //if(layer == 1){
                     //    visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
                     //}
-                    if(layer == 1)
-                        visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
-                    if(layer == 0)
-                        visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                    if(layer == 1){
+                        if(ControllerSingleton::chords_visualizeAsDots)
+                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
+                        if(ControllerSingleton::chords_visualizeAsKeys)
+                            visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                    }
+                    
+                    if(layer == 0){
+                        if(ControllerSingleton::chords_visualizeAsDots)
+                            visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                    }
 
                 }
             }
@@ -231,7 +240,7 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     g.setFont(h/3.0f);
     g.setColour(Colours::black);
     if(functionType != Chord::FUNC_REGULAR)
-        g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::left, false);
+        g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
 }
 
 

@@ -86,6 +86,7 @@ public:
         shutdownAudio();
         //handleOutputs
         formatManager.registerBasicFormats();
+        
         File x ("/Users/expert239/Desktop/BA_hacky_1625.wav");
         std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (x));
         

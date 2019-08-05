@@ -19,16 +19,22 @@
 
 
 VisuMaster::VisuMaster(){
+    
+    addAndMakeVisible(arrowBtn);
+    arrowBtn.onClick = [&] { visuSidePanel->showOrHide (true); };
+    
+    visuSidePanel.reset(new VisuSidePanel("Visualisation-Settings", 300, false));
+    addAndMakeVisible(*visuSidePanel);
     // Make sure you set the size of the component after
     // you add any child components.
-    setSize (800, 600);
+    
     Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
 	int x = r.getWidth();
 	int y = r.getHeight();
 
 
 
-    setSize (x, y);
+    setSize (x/3.0f, y);
 
     setBounds (getScreenX(),getScreenY(),x,y);
     
@@ -46,6 +52,8 @@ VisuMaster::VisuMaster(){
     currMouseY = getHeight()/2.0f;
     
     openGLContext.attachTo (*this);
+    
+    openGLContext.setComponentPaintingEnabled(true);
 
     setFramesPerSecond(ControllerSingleton::fps);
 
@@ -65,9 +73,15 @@ VisuMaster::VisuMaster(){
 
     setEnterTime();
     
-    File f = File("/Users/expert239/Desktop/Copter3.png");
+    File f = File("/Users/expert239/Desktop/wallpaperbro.jpeg");
     
-    bla = ImageFileFormat::loadFrom(f);
+    backgroundImage = ImageFileFormat::loadFrom(f);
+    
+    
+    
+    
+    
+    
 }
 
 VisuMaster::~VisuMaster()
@@ -84,14 +98,14 @@ void VisuMaster::paint (Graphics& g)
     double timeSinceLastFrameMs = b-a;
     displayTiming();
     setEnterTime();
-    
+
     int samplePositionOfSong = SharedResources::samplesPositionOfSong;
     //IDEE: UPDATE und dann RENDER -> Objekte haben eigene Koordinaten?
 
 
     //UPDATE******************UPDATE
 
-    
+
     //reposition chords;
     int bpm = 120;
     float timePerBar  = 60000.0f/((float)bpm)*4;
@@ -109,13 +123,14 @@ void VisuMaster::paint (Graphics& g)
 
     points->followY(pitch);
     //UPDATE******************UPDATE
-    
+
     //reAdjustWindow(pitch, timeSinceLastFrameMs);
 
-    
-    //RENDER******************RENDER
 
-    createBackGroundSpace(g);
+    //RENDER******************RENDER
+    
+    g.drawImageAt(backgroundImage, 0,0);
+    //createBackGroundSpace(g);
 
 
 
@@ -153,9 +168,9 @@ void VisuMaster::paint (Graphics& g)
     //createNoteText(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
 
     //renderNoteHistory
-    
+
     Path path = Path();
-    std::cout << "PATH\n";
+    //std::cout << "PATH\n";
     int pitchHistoryIndex = SharedResources::pitchHistoryIndex;
     int samplePositionOfFirst = 0;
     float y = 0.0f;
@@ -174,9 +189,9 @@ void VisuMaster::paint (Graphics& g)
         x = ((float)(second-samplePositionOfFirst))/(float)SharedResources::samplerate*1000.0f/(float)ControllerSingleton::timePerBarMs; //-> now Position in Bars
         if(x < -1.0f)
             break;
-        std::cout << "second:" << second << "\n";
-        std::cout << "X:" << x << "\n";
-        std::cout << "Y:" << y << "\n";
+        //std::cout << "second:" << second << "\n";
+        //std::cout << "X:" << x << "\n";
+        //std::cout << "Y:" << y << "\n";
         x = (x+1.0f)/4.0f * getWidth();
         if(i == 0 || std::abs(y-oldy) > 0.1f*getHeight()){
             path.startNewSubPath(x,y);
@@ -188,14 +203,14 @@ void VisuMaster::paint (Graphics& g)
         oldy = y;
         oldx = x;
     }
-    std::cout << "PATHEND\n";
+    //std::cout << "PATHEND\n";
     g.setColour(ControllerSingleton::pointsColor);
     g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);
     //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
-    g.drawImageAt(bla, 0,0);
     
+
     //RENDER******************RENDER
     /*
     setExitTime();
@@ -255,10 +270,13 @@ void VisuMaster::reAdjustWindow(float p, float timeSinceLastFrameMs){
 
 void VisuMaster::resized()
 {
+    //visuSidePanel->showOrHide(false);
+    arrowBtn.setBounds(getWidth() - 20-10,10,20,20);
     //points->resize();
     // This is called when the OpenGLComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+    
 }
 
 void VisuMaster::update(){}

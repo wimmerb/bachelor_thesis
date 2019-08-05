@@ -12,6 +12,7 @@
 #include "Points.h"
 #include "Chord.h"
 #include "ChordVisualisation.h"
+#include "VisuSidePanel.h"
 #include <time.h>
 #include <list>
 
@@ -38,7 +39,19 @@ private:
     // Your private member variables go here...
     
     float currMouseY;
-    Image bla;
+    Image backgroundImage;
+    ToggleButton highlightBasicPiano {"highlightBasicPiano"};
+    ToggleButton basicPianoVisualizeWholeScale {"basicPianoVisualizeWholeScale"};
+    ToggleButton basicPianoVisualizeWithColours {"basicPianoVisualizeWithColours"};
+    
+    ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
+    ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
+    ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
+    
+    BurgerMenuComponent burgerMenu;
+    std::unique_ptr<SidePanel> sidePanel;
+    ArrowButton arrowBtn {"SideBar", 0.5f, getLookAndFeel().findColour(Slider::thumbColourId)};
+    std::unique_ptr<VisuSidePanel> visuSidePanel;
     
     float visu_lowerBound;
     float visu_range;
@@ -65,7 +78,7 @@ private:
     OpenGLContext openGLContext;
     void newOpenGLContextCreated() override;
     void openGLContextClosing() override;
-
+    
 
 
 

@@ -39,13 +39,14 @@ public:
     static bool snapPitchToGrid;
     
     //ChordVisualisation
+    static bool chords_visualizeAsDots;
+    static bool chords_visualizeAsKeys;
     static bool * chords_visuArray;
     static bool chords_visualizeWithColours;
     static bool chords_fadeOutHorizontal;
     
     //BasicPianoVisualisation
     static bool basicp_highlightBasicPiano;
-    static bool basicp_inFront;
     static bool basicp_visualizeWholeScale;
     static bool basicP_visualizeWithColours;
     //==========================================================================
