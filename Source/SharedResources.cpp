@@ -23,3 +23,6 @@ int SharedResources::pitchHistoryIndex = 0;
 //Delta in Samples
 int SharedResources::samplesPositionOfSong = 0;
 int SharedResources::sampleCountOfSong = 0;
+
+//Functionality for CountIn
+bool SharedResources::countIn = true;

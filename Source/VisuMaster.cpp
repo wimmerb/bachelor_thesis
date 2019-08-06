@@ -20,6 +20,10 @@
 
 VisuMaster::VisuMaster(){
     
+    addAndMakeVisible(playButton);
+    playButton.onClick = [&] { ControllerSingleton::isPlaying = true; };
+    addAndMakeVisible(pauseButton);
+    pauseButton.onClick = [&] { ControllerSingleton::isPlaying = false; };
     addAndMakeVisible(arrowBtn);
     arrowBtn.onClick = [&] { visuSidePanel->showOrHide (true); };
     
@@ -128,8 +132,8 @@ void VisuMaster::paint (Graphics& g)
 
 
     //RENDER******************RENDER
-    setEnterTime();
-    //g.drawImageAt(backgroundImage, 0,0);
+    
+    g.drawImageAt(backgroundImage, getWidth()/ControllerSingleton::barsPerScreen,0);
     //createBackGroundSpace(g);
     
 
@@ -143,7 +147,7 @@ void VisuMaster::paint (Graphics& g)
         bla -> drawForRectangle(g, *(new Rectangle<int>(getWidth()/ControllerSingleton::barsPerScreen, 0, 1, getHeight())));
     }
     
-
+    
     int indexOfLastChord = 0;
     for(int i = 0; i < chordVector->size(); i++){
         if(chordVisualizer->isCurrentChord((*(chordVector))[i])){
@@ -152,17 +156,25 @@ void VisuMaster::paint (Graphics& g)
         }
     }
     
+    
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
         chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth(), 1);
     }
     
-    
+    g.setColour(Colours::black);//TODO WTF
+    g.drawImage(backgroundImage, Rectangle<float>(0, 0, getWidth()/ControllerSingleton::barsPerScreen, getHeight()));
     chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
     
+    setEnterTime();
     
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++) {
         chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) getHeight(), (float) getWidth(), 0);
     }
+    
+    setExitTime();
+    displayTiming();
+    
+    
     
     /*
     chordVisualizer->visualize(*chord, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());//nrVisualizedKeys wegmachen
@@ -211,12 +223,11 @@ void VisuMaster::paint (Graphics& g)
     }
     //std::cout << "PATHEND\n";
     g.setColour(ControllerSingleton::pointsColor);
-    //g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
+    g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);
     //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
-    setExitTime();
-    displayTiming();
+    
     
     //RENDER******************RENDER
     /*
@@ -277,6 +288,8 @@ void VisuMaster::reAdjustWindow(float p, float timeSinceLastFrameMs){
 
 void VisuMaster::resized()
 {
+    playButton.setBounds(getWidth() - 3*20-10,10,20,20);
+    pauseButton.setBounds(getWidth() - 2*20-10,10,20,20);
     //visuSidePanel->showOrHide(false);
     arrowBtn.setBounds(getWidth() - 20-10,10,20,20);
     //points->resize();

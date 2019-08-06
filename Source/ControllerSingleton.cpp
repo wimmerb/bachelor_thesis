@@ -60,5 +60,5 @@ bool ControllerSingleton::basicp_visualizeWholeScale = true;
 bool ControllerSingleton::basicP_visualizeWithColours = true;
 //==========================================================================
 //BASICCONTROL
-bool ControllerSingleton::isPlaying = true;
+bool ControllerSingleton::isPlaying = false;
 bool ControllerSingleton::isLooping = true;

@@ -28,6 +28,9 @@ public:
     static int samplesPositionOfSong;
     static int sampleCountOfSong;
     
+    //Functionality for Counting in
+    static bool countIn;
+    
 private:
     
 };

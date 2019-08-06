@@ -42,6 +42,11 @@ void Chord::updatePosition(int samplePositionOfSong){
     if(samplePositionOfSong > endsAtSampleCount){
         positionX += totalLengthOfSongInBars;
     }
+    if(SharedResources::countIn){
+        if(positionX <= 0.0f && positionX > -1.0f){
+            positionX += totalLengthOfSongInBars;
+        }
+    }
 //    positionX -= (timeDeltaMs/ControllerSingleton::timePerBarMs);//*(float)ControllerSingleton::isPlaying;
 //    if(positionX <= -lengthInBars){
 //        positionX += totalLengthOfSongInBars;
@@ -110,7 +115,7 @@ void Chord::initGuidelines(){
     
     for (int i = 0; i < 12; i++){
         if(functionForNote[i] == FUNC_3 || functionForNote[i] == FUNC_7){
-            for (int j = -2; j <=2; j++){
+            for (int j = -3; j <=3; j++){
                 int nextChordFunc = nextChord.functionForNote[(i+j+12)%12];
                 if(nextChordFunc == FUNC_3 || nextChordFunc == FUNC_7){
                     guideLines.push_back(std::pair<int, int>(i, j));

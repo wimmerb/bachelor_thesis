@@ -41,7 +41,7 @@ void ChordVisualisation::visualizeBackgroundPiano(float visu_lB, float visu_r, G
 
 
         g.setColour(col);
-        //g.fillRect(x,y,w,h);
+        g.fillRect(x,y,w,h);
         
         /*
         //g.setColour(colourForKeyBorder);
@@ -104,9 +104,9 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
 
 
         g.setColour(col);
-        //g.fillRect(x,y,w,h);
+        g.fillRect(x,y,w,h);
         g.setColour(colourForKeyBorder);
-        //g.drawRect(x,y,w,h, thicknessForKeyBorder);
+        g.drawRect(x,y,w,h, thicknessForKeyBorder);
     }
 }
 
@@ -168,6 +168,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                         Chord nextChord = c.acquireNext();
                         if(guideLines.size() > 0){
                             float w2 = (1.0f/ControllerSingleton::barsPerScreen*nextChord.lengthInBars)*width-10.0f;
+                            //TODO hier haben wir ein Problem, das funktioniert nicht, wenn barsperscreen kleiner der eigentlichen Bars is...
                             bool isWrapAround = false;
                             float positionXNextChord = nextChord.positionX;
                             if (nextChord.positionX < c.positionX){
@@ -214,7 +215,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
             }
             mix *= 0.2f;
             g.setColour(Colours::white.interpolatedWith(Colour::fromRGBA(0.0f,0.0f,0.0f, 0.0f), 1.0f-mix));
-            //g.fillAll();
+            g.fillAll();
         }
 
         
@@ -252,7 +253,7 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     else{
         g.setColour(col);
     }
-    //g.fillRoundedRectangle(x,y,w,h,2.0f);
+    g.fillRoundedRectangle(x,y,w,h,2.0f);
     col = colourForKeyBorder;
     if(ControllerSingleton::chords_fadeOutHorizontal){
         g.setGradientFill(*(new ColourGradient(col, x, 0, Colour::fromRGBA(0,0,0,0), x+w, 0, false)));
@@ -260,12 +261,12 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     else{
         g.setColour(col);
     }
-    //g.drawRoundedRectangle(x,y,w,h,2.0f, thicknessForKeyBorder);
+    g.drawRoundedRectangle(x,y,w,h,2.0f, thicknessForKeyBorder);
 
     g.setFont(h/3.0f);
     g.setColour(Colours::black);
-    if(functionType != Chord::FUNC_REGULAR){}
-        //g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
+    if(functionType != Chord::FUNC_REGULAR)
+        g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
 }
 
 
@@ -285,7 +286,7 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
     else{
         col = !(ControllerSingleton::chords_visualizeWithColours)?functionTypeToColourWhiteScheme.at(Chord::FUNC_REGULAR):functionTypeToColourWhiteScheme.at(functionType);
     }
-
+    
     if(isCurrentChord(c)){
         x = std::max(x, (1.0f / ControllerSingleton::barsPerScreen * (1.0f) * width));
 
@@ -298,15 +299,16 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
         col2 = col2.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
         col3 = col3.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
     }
+    
     g.setColour(col);
-    //g.fillEllipse(x-0.5*h,y,h,h);
+    g.fillEllipse(x-0.5*h,y,h,h);
     g.setColour(col2);
-    //g.drawEllipse(x-0.5*h,y,h,h,thicknessForKeyBorder);
+    g.drawEllipse(x-0.5*h,y,h,h,thicknessForKeyBorder);
 
     g.setFont(h/3.0f);
     g.setColour(col3);
     if(functionType != Chord::FUNC_REGULAR){}
-        //g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
+        g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
 
 
 
@@ -325,8 +327,8 @@ void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionTy
     else{
         g.setColour(col);
     }
-    if(x+w-x2 >= 0){}
-        //g.fillRect(x2,y,x+w-x2,h);
+    if(x+w-x2 >= 0)
+        g.fillRect(x2,y,x+w-x2,h);
 
 }
 
@@ -337,7 +339,7 @@ void ChordVisualisation::visualizeGuideLine(float x, float y, float w, float x2,
     p.cubicTo(x2+0.1f*w2, y, x+w*0.75f+(w2*(0.25f-0.1f)), y2, x2+w2*0.25f, y2);
     p.lineTo(x2+w2*0.5f, y2);
     g.setColour(Colours::yellow);
-    //g.strokePath(p, PathStrokeType(hVisu));
+    g.strokePath(p, PathStrokeType(hVisu));
 }
 
 

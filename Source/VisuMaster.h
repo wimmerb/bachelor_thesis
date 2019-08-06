@@ -53,6 +53,9 @@ private:
     ArrowButton arrowBtn {"SideBar", 0.5f, getLookAndFeel().findColour(Slider::thumbColourId)};
     std::unique_ptr<VisuSidePanel> visuSidePanel;
     
+    ArrowButton playButton {"PlayPause", 0.0f, getLookAndFeel().findColour(Slider::thumbColourId)};
+    ArrowButton pauseButton {"PlayPause", 0.3f, getLookAndFeel().findColour(Slider::thumbColourId)};
+    
     float visu_lowerBound;
     float visu_range;
 
