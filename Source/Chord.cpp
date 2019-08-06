@@ -47,6 +47,17 @@ void Chord::updatePosition(int samplePositionOfSong){
 //        positionX += totalLengthOfSongInBars;
 //    }
 }
+
+int Chord::IdCount = 0;
+
+std::vector<std::pair<int, int>> Chord::getGuideLines(int func){
+    std::vector<std::pair<int,int>> tmp;
+    for(int i = 0; i < guideLines.size(); i++){
+        if (guideLines[i].first == func)
+            tmp.push_back(guideLines[i]);
+    }
+    return tmp;
+}
 //==============================================================================
 
 String Chord::toString(){
@@ -72,18 +83,47 @@ float Chord::totalLengthOfSongInBars;
 
 std::vector<Chord> * Chord::chordVector;
 void Chord::initFromChordVector(std::vector<Chord> * cv){
+    IdCount = 0;
     //TODO: wait for Analyser to be initialised
     chordVector = cv;
     float overallLength = 0.0f;
     std::vector<Chord>::iterator it;
     for (it = chordVector->begin(); it != chordVector->end(); ++it){
+        it->Id = IdCount++;
         it->beginsAtSampleCount = overallLength*ControllerSingleton::bpb/ControllerSingleton::bpm*60.0f*SharedResources::samplerate;
         //it->positionX = overallLength;
         overallLength += it->lengthInBars;
         it->endsAtSampleCount = overallLength*ControllerSingleton::bpb/ControllerSingleton::bpm*60.0f*SharedResources::samplerate;
+        
+        
     }
+    for (it = chordVector->begin(); it != chordVector->end(); ++it){
+        it->initGuidelines();
+    }
+    
+    
     totalLengthOfSongInBars = overallLength;
     //if totalLengthOfSongInBars*bpb/bpm*60*samplerateofsong != samplesizeofsong -> FAIL
+}
+void Chord::initGuidelines(){
+    Chord nextChord = acquireNext();
+    
+    for (int i = 0; i < 12; i++){
+        if(functionForNote[i] == FUNC_3 || functionForNote[i] == FUNC_7){
+            for (int j = -2; j <=2; j++){
+                int nextChordFunc = nextChord.functionForNote[(i+j+12)%12];
+                if(nextChordFunc == FUNC_3 || nextChordFunc == FUNC_7){
+                    guideLines.push_back(std::pair<int, int>(i, j));
+                    std::cout << baseName << chordName<< "::   " << "I:" << i << "   J:" << j << "       ::"<< nextChord.baseName+nextChord.chordName << "\n";
+                }
+                
+            }
+        }
+    }
+}
+//TODO remove vector POINTER....
+Chord Chord::acquireNext(){
+    return (*chordVector)[(Id+1)%chordVector->size()];
 }
 /*
 const std::map<const std::string, const std::vector<int>> scaleNameToDegrees;

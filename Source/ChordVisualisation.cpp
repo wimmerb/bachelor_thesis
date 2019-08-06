@@ -41,9 +41,11 @@ void ChordVisualisation::visualizeBackgroundPiano(float visu_lB, float visu_r, G
 
 
         g.setColour(col);
-        g.fillRect(x,y,w,h);
+        //g.fillRect(x,y,w,h);
+        
+        /*
         //g.setColour(colourForKeyBorder);
-        //g.drawRect(x,y,w,h, thicknessForKeyBorder);
+        //g.drawRect(x,y,w,h, thicknessForKeyBorder);*/
     }
 }
 void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphics& g, float height, float width){
@@ -71,13 +73,7 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
 
         Colour col = isBlackKey?Colour::fromRGBA(0,0,0,120):Colour::fromRGBA(255,255,255,120);
 
-        /*
-        //
-        g.setColour(col);
-        g.fillRect(x,y,w,h);
-        g.setColour(colourForKeyBorder);
-        g.drawRect(x,y,w,h, thicknessForKeyBorder);
-        */
+        
 
         w = 1.0f/ControllerSingleton::barsPerScreen*width;
         h = height/ControllerSingleton::nrOfVisualizedKeys;
@@ -108,9 +104,9 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
 
 
         g.setColour(col);
-        g.fillRect(x,y,w,h);
+        //g.fillRect(x,y,w,h);
         g.setColour(colourForKeyBorder);
-        g.drawRect(x,y,w,h, thicknessForKeyBorder);
+        //g.drawRect(x,y,w,h, thicknessForKeyBorder);
     }
 }
 
@@ -138,7 +134,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
             Chord::FunctionType functionType = getFunctionTypeUnderVisuConstraints(c, func);
             if(functionType != Chord::FUNC_NAN){
                 if(functionType == Chord::FUNC_REGULAR && ControllerSingleton::chords_visuArray[functionType]){
-                    float h2 = h/3.0f;
+                    float h2 = h/3.0f;//TODO: diese Berechnung in die jeweilige Funktion geben
                     float y2 = y-h2/2.0f;
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
@@ -167,7 +163,36 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                             visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
                         if(ControllerSingleton::chords_visualizeAsKeys)
                             visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                        
+                        std::vector<std::pair<int, int>> guideLines = c.getGuideLines(func);
+                        Chord nextChord = c.acquireNext();
+                        if(guideLines.size() > 0){
+                            float w2 = (1.0f/ControllerSingleton::barsPerScreen*nextChord.lengthInBars)*width-10.0f;
+                            bool isWrapAround = false;
+                            float positionXNextChord = nextChord.positionX;
+                            if (nextChord.positionX < c.positionX){
+                                positionXNextChord += Chord::totalLengthOfSongInBars;
+                                isWrapAround = true;
+                            }
+                            float x2 = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+positionXNextChord))*width;
+                            for(int i = 0; i < guideLines.size(); i++){
+                                float y2_2 = y - guideLines[i].second*h;
+                                visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, g);
+                                if(isWrapAround)
+                                    visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
+                                                       y,
+                                                       w,
+                                                       x2-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
+                                                       y2_2,
+                                                       w2,
+                                                       h3,
+                                                       g);
+                            }
+                        }
                     }
+                    
+                    
+                    
                     
                     if(layer == 0){
                         if(ControllerSingleton::chords_visualizeAsDots)
@@ -189,7 +214,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
             }
             mix *= 0.2f;
             g.setColour(Colours::white.interpolatedWith(Colour::fromRGBA(0.0f,0.0f,0.0f, 0.0f), 1.0f-mix));
-            g.fillAll();
+            //g.fillAll();
         }
 
         
@@ -227,7 +252,7 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     else{
         g.setColour(col);
     }
-    g.fillRoundedRectangle(x,y,w,h,2.0f);
+    //g.fillRoundedRectangle(x,y,w,h,2.0f);
     col = colourForKeyBorder;
     if(ControllerSingleton::chords_fadeOutHorizontal){
         g.setGradientFill(*(new ColourGradient(col, x, 0, Colour::fromRGBA(0,0,0,0), x+w, 0, false)));
@@ -235,12 +260,12 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     else{
         g.setColour(col);
     }
-    g.drawRoundedRectangle(x,y,w,h,2.0f, thicknessForKeyBorder);
+    //g.drawRoundedRectangle(x,y,w,h,2.0f, thicknessForKeyBorder);
 
     g.setFont(h/3.0f);
     g.setColour(Colours::black);
-    if(functionType != Chord::FUNC_REGULAR)
-        g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
+    if(functionType != Chord::FUNC_REGULAR){}
+        //g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
 }
 
 
@@ -274,14 +299,14 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
         col3 = col3.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
     }
     g.setColour(col);
-    g.fillEllipse(x-0.5*h,y,h,h);
+    //g.fillEllipse(x-0.5*h,y,h,h);
     g.setColour(col2);
-    g.drawEllipse(x-0.5*h,y,h,h,thicknessForKeyBorder);
+    //g.drawEllipse(x-0.5*h,y,h,h,thicknessForKeyBorder);
 
     g.setFont(h/3.0f);
     g.setColour(col3);
-    if(functionType != Chord::FUNC_REGULAR)
-        g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
+    if(functionType != Chord::FUNC_REGULAR){}
+        //g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
 
 
 
@@ -291,7 +316,7 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
 
 void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float relBase, int i, Graphics& g, float height, float width, float x, float y, float w, float h){
 
-    bool isBlackKey = isBlack(func);
+    //bool isBlackKey = isBlack(func);
     Colour col = Colours::white.interpolatedWith(Colour::fromRGBA(0,0,0,0), isCurrentChord(c)?0.4f:0.75f);
     float x2 = std::max(x, (1.0f/ControllerSingleton::barsPerScreen*(1.0f)*width));
     if(ControllerSingleton::chords_fadeOutHorizontal && isCurrentChord(c)){
@@ -300,10 +325,19 @@ void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionTy
     else{
         g.setColour(col);
     }
-    if(x+w-x2 >= 0)
-        g.fillRect(x2,y,x+w-x2,h);
-    //g.fillRect(x2,y,x+w-x2,h);
+    if(x+w-x2 >= 0){}
+        //g.fillRect(x2,y,x+w-x2,h);
 
+}
+
+void ChordVisualisation::visualizeGuideLine(float x, float y, float w, float x2, float y2, float w2, float hVisu, Graphics& g){
+    Path p;
+    p.startNewSubPath(x+w*0.5f, y);
+    p.lineTo(x+w*0.75f, y);
+    p.cubicTo(x2+0.1f*w2, y, x+w*0.75f+(w2*(0.25f-0.1f)), y2, x2+w2*0.25f, y2);
+    p.lineTo(x2+w2*0.5f, y2);
+    g.setColour(Colours::yellow);
+    //g.strokePath(p, PathStrokeType(hVisu));
 }
 
 
@@ -321,7 +355,7 @@ Chord::FunctionType ChordVisualisation::getFunctionTypeUnderVisuConstraints(Chor
 bool ChordVisualisation::isOnScreen(Chord c){
     if(c.positionX > ControllerSingleton::barsPerScreen - 1)
         return false;
-    if(c.positionX+c.lengthInBars < 0.0f)
+    if(c.positionX+c.lengthInBars+0.5f < 0.0f)
         return false;
 
     return true;

@@ -48,6 +48,16 @@ public:
     std::string chordName;
     std::string scaleName;
     int base;
+    
+    Chord acquireNext();
+    
+    int Id;
+    static int IdCount;
+    
+    static float totalLengthOfSongInBars;
+    
+    std::vector<std::pair<int, int>> guideLines;
+    std::vector<std::pair<int, int>> getGuideLines(int func);
     //==========================================================================
     
 private:
@@ -82,9 +92,12 @@ private:
 
             
     void initFunctionForNote(std::string scaleName, std::string chordName);
+    
+    void initGuidelines();
 
-
-    static float totalLengthOfSongInBars;
+    
+    
+    
     static std::vector<Chord> * chordVector;
     
     float beginsAtSampleCount = 0.0f;

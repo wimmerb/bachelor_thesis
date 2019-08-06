@@ -118,6 +118,7 @@ public:
 
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
     {
+        //std::cout << bufferToFill.numSamples << "\n"; -> 512 Samples am Mac
         //Audio-Video Sync
         SharedResources::samplesPositionOfSong = positionToPlay+bufferToFill.numSamples;
 //

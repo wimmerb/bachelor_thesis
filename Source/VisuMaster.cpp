@@ -94,10 +94,10 @@ VisuMaster::~VisuMaster()
 //==============================================================================
 void VisuMaster::paint (Graphics& g)
 {
-    setExitTime();
-    double timeSinceLastFrameMs = b-a;
-    displayTiming();
-    setEnterTime();
+//    setExitTime();
+//    double timeSinceLastFrameMs = b-a;
+//    displayTiming();
+//    setEnterTime();
 
     int samplePositionOfSong = SharedResources::samplesPositionOfSong;
     //IDEE: UPDATE und dann RENDER -> Objekte haben eigene Koordinaten?
@@ -128,18 +128,21 @@ void VisuMaster::paint (Graphics& g)
 
 
     //RENDER******************RENDER
-    
-    g.drawImageAt(backgroundImage, 0,0);
+    setEnterTime();
+    //g.drawImageAt(backgroundImage, 0,0);
     //createBackGroundSpace(g);
+    
 
 
-
+    
     chordVisualizer->visualizeBackgroundPiano(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
-
+    
+    
     if(ControllerSingleton::dropShadows){
         DropShadow * bla = new DropShadow(Colour::fromRGBA(0,0,0,120), 20, Point<int>(-10,0));
         bla -> drawForRectangle(g, *(new Rectangle<int>(getWidth()/ControllerSingleton::barsPerScreen, 0, 1, getHeight())));
     }
+    
 
     int indexOfLastChord = 0;
     for(int i = 0; i < chordVector->size(); i++){
@@ -148,16 +151,19 @@ void VisuMaster::paint (Graphics& g)
             break;
         }
     }
+    
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
         chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth(), 1);
     }
-
+    
+    
     chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
-
-
+    
+    
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++) {
         chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) getHeight(), (float) getWidth(), 0);
     }
+    
     /*
     chordVisualizer->visualize(*chord, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());//nrVisualizedKeys wegmachen
     chordVisualizer->visualize(*chord2, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
@@ -166,9 +172,9 @@ void VisuMaster::paint (Graphics& g)
 
 
     //createNoteText(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
-
+    
     //renderNoteHistory
-
+    
     Path path = Path();
     //std::cout << "PATH\n";
     int pitchHistoryIndex = SharedResources::pitchHistoryIndex;
@@ -205,12 +211,13 @@ void VisuMaster::paint (Graphics& g)
     }
     //std::cout << "PATHEND\n";
     g.setColour(ControllerSingleton::pointsColor);
-    g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
+    //g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);
     //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
+    setExitTime();
+    displayTiming();
     
-
     //RENDER******************RENDER
     /*
     setExitTime();
@@ -374,6 +381,7 @@ void VisuMaster::mouseDrag(const MouseEvent& event)
 void VisuMaster::displayTiming(){
     //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%s", "§§§§§§§§§§§§§§§§displaytimingOpenGL§§§§§§§§§§§§§§\n");
     //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%lf", b-a);
+    std::cout << b-a << "\n";
     //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%s", "§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§\n");
 }
 
