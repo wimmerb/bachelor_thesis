@@ -32,15 +32,15 @@ VisuMaster::VisuMaster(){
     // Make sure you set the size of the component after
     // you add any child components.
     
-    Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
-	int x = r.getWidth();
-	int y = r.getHeight();
+    //Rectangle<int> r = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+	//int x = r.getWidth();
+	//int y = r.getHeight();
 
 
 
-    setSize (x/3.0f, y);
+    //setSize (x/3.0f, y);
 
-    setBounds (getScreenX(),getScreenY(),x,y);
+    //setBounds (getScreenX(),getScreenY(),x,y);
     
     //addMouseListener(this, false);
 

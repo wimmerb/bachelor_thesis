@@ -112,14 +112,33 @@ void Chord::initFromChordVector(std::vector<Chord> * cv){
 }
 void Chord::initGuidelines(){
     Chord nextChord = acquireNext();
-    
+    //TODO HIER WÄRE ES AUCH GUT, IM NACHHINEIN - wohl besser im Nachhinein - ODER WÄHRENDDESSEN FÜR JEDES ZIEL DAS MINIMUM ZU WÄHLEN
     for (int i = 0; i < 12; i++){
         if(functionForNote[i] == FUNC_3 || functionForNote[i] == FUNC_7){
-            for (int j = -3; j <=3; j++){
+            for (int j = -4; j <=4; j++){
                 int nextChordFunc = nextChord.functionForNote[(i+j+12)%12];
                 if(nextChordFunc == FUNC_3 || nextChordFunc == FUNC_7){
-                    guideLines.push_back(std::pair<int, int>(i, j));
-                    std::cout << baseName << chordName<< "::   " << "I:" << i << "   J:" << j << "       ::"<< nextChord.baseName+nextChord.chordName << "\n";
+                    if(guideLines.size()==0)
+                        guideLines.push_back(std::pair<int, int>(i, j));
+                    else{
+                        if(guideLines[guideLines.size()-1].first == i){
+                            if(std::abs(guideLines[guideLines.size()-1].second) > std::abs(j)){
+                                while(guideLines[guideLines.size()-1].first == i){
+                                    guideLines.pop_back();
+                                }
+                                std::cout << "INITGUIDE" << "1." << guideLines[0].second << "2." << j;
+                                guideLines.push_back(std::pair<int, int>(i, j));
+                            }
+                            else{
+                                if(!(std::abs(guideLines[guideLines.size()-1].second) < std::abs(j)))
+                                    guideLines.push_back(std::pair<int, int>(i, j));
+                            }
+                            
+                        }
+                        else
+                            guideLines.push_back(std::pair<int, int>(i, j));
+                    }
+//                    std::cout << baseName << chordName<< "::   " << "I:" << i << "   J:" << j << "       ::"<< nextChord.baseName+nextChord.chordName << "\n";
                 }
                 
             }

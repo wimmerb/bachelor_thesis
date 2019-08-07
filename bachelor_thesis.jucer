@@ -3,6 +3,11 @@
 <JUCERPROJECT id="Bt6tNr" name="bachelor_thesis" projectType="guiapp" jucerVersion="5.4.3">
   <MAINGROUP id="R66v5n" name="bachelor_thesis">
     <GROUP id="{D472E6FD-5822-732D-AEF1-78C2A98AA98C}" name="Source">
+      <FILE id="htQmay" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
+      <FILE id="xJlBZV" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
+      <FILE id="TKeKkI" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="sq0ahK" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
       <GROUP id="{2FF857C0-0091-6A48-9DFE-B715AFFA4AD2}" name="New Group">
         <FILE id="WhoRga" name="BA_hacky_1625.wav" compile="0" resource="1"
               file="../BA_hacky_1625.wav"/>

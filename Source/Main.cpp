@@ -9,9 +9,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <thread>
-#include "VisuMaster.h"
-#include "AnalyserComponent.h"
-#include "ControllerSingleton.h"
+#include "MainComponent.h"
 //#include "Points.cpp"
 
 
@@ -29,8 +27,7 @@ public:
 
     void initialise (const String&) override         {
 
-                                                                mainWindow.reset (new MainWindow ("PitchTrackAndOpenGL", new VisuMaster(), *this));
-                                                                new AnalyserComponent();
+                                                                mainWindow.reset (new MainWindow ("PitchTrackAndOpenGL", new MainComponent(), *this));
                                                         }
     void shutdown() override                         { mainWindow = nullptr; }
 
