@@ -13,6 +13,7 @@
 #include "Chord.h"
 #include "ChordVisualisation.h"
 #include "VisuSidePanel.h"
+#include "GameMenu.h"
 #include <time.h>
 #include <list>
 
@@ -31,6 +32,7 @@ public:
     
     //==============================================================================
     void mouseDrag(const MouseEvent &event) override;
+    std::function<void(const String & s)> informParent;
 
 
 
@@ -40,21 +42,11 @@ private:
     
     float currMouseY;
     Image backgroundImage;
-    ToggleButton highlightBasicPiano {"highlightBasicPiano"};
-    ToggleButton basicPianoVisualizeWholeScale {"basicPianoVisualizeWholeScale"};
-    ToggleButton basicPianoVisualizeWithColours {"basicPianoVisualizeWithColours"};
     
-    ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
-    ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
-    ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
-    
-    BurgerMenuComponent burgerMenu;
-    std::unique_ptr<SidePanel> sidePanel;
-    ArrowButton arrowBtn {"SideBar", 0.5f, getLookAndFeel().findColour(Slider::thumbColourId)};
+    //std::unique_ptr<SidePanel> sidePanel;
     std::unique_ptr<VisuSidePanel> visuSidePanel;
-    
-    ArrowButton playButton {"PlayPause", 0.0f, getLookAndFeel().findColour(Slider::thumbColourId)};
-    ArrowButton pauseButton {"PlayPause", 0.3f, getLookAndFeel().findColour(Slider::thumbColourId)};
+    GameMenu gameMenu {};
+    void receiveFromGameMenu(const String & s);
     
     float visu_lowerBound;
     float visu_range;
@@ -66,6 +58,7 @@ private:
     
     void update() override;
     void paint(Graphics &g) override;
+    void ppaint(Graphics &g);
     void resized() override;
 
     void createBackGroundSpace(Graphics &g);

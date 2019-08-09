@@ -19,6 +19,8 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         basicPianoVisualizeWithColours.setToggleState(ControllerSingleton::basicP_visualizeWithColours, NotificationType::dontSendNotification);
         chordsVisualizeAsDots.setToggleState(ControllerSingleton::chords_visualizeAsDots, NotificationType::dontSendNotification);
         chordsVisualizeAsKeys.setToggleState(ControllerSingleton::chords_visualizeAsKeys, NotificationType::dontSendNotification);
+        keyBoardMode.setToggleState(ControllerSingleton::keyBoardMode, NotificationType::dontSendNotification);
+        
         barsPerScreen.setSliderStyle(Slider::LinearHorizontal);
         
         barsPerScreen.setTextBoxStyle(Slider::NoTextBox, true, 40, 40);
@@ -31,6 +33,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         addAndMakeVisible(chordsVisualizeAsDots);
         addAndMakeVisible(chordsVisualizeAsKeys);
         addAndMakeVisible(chordsFadeOutHorizontal);
+        addAndMakeVisible(keyBoardMode);
         addAndMakeVisible(barsPerScreen);
         
         highlightBasicPiano.onClick = [this]{ControllerSingleton::basicp_highlightBasicPiano = highlightBasicPiano.getToggleState();};
@@ -39,6 +42,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         chordsVisualizeAsDots.onClick = [this]{ControllerSingleton::chords_visualizeAsDots = chordsVisualizeAsDots.getToggleState();};
         chordsVisualizeAsKeys.onClick = [this]{ControllerSingleton::chords_visualizeAsKeys = chordsVisualizeAsKeys.getToggleState();};
         chordsFadeOutHorizontal.onClick = [this]{ControllerSingleton::chords_fadeOutHorizontal = chordsFadeOutHorizontal.getToggleState();};
+        keyBoardMode.onClick = [this]{ControllerSingleton::keyBoardMode = keyBoardMode.getToggleState();};
         
         barsPerScreen.setRange(2.0, 10.0, 1.0);
         barsPerScreen.onValueChange = [this]{ControllerSingleton::barsPerScreen = std::round(barsPerScreen.getValue());};
@@ -57,19 +61,19 @@ VisuSidePanel::~VisuSidePanel(){};
 
 void VisuSidePanel::resized(){
     SidePanel::resized();
-    
-    int x = std::round(getWidth()*0.1);
-    int base = 50;
-    int i = 0;
-    highlightBasicPiano.setBounds(x,base+i++*40,200,40);
-    basicPianoVisualizeWithColours.setBounds(x,base+i++*40,200,40);
-    basicPianoVisualizeWholeScale.setBounds(x,base+i++*40,200,40);
-    i++;
-    chordsVisualizeAsDots.setBounds(x,base+i++*40,200,40);
-    chordsVisualizeAsKeys.setBounds(x,base+i++*40,200,40);
-    chordsFadeOutHorizontal.setBounds(x,base+i++*40,200,40);
-    i++;
-    barsPerScreen.setBounds(x,base+i++*40,200,40);
+    auto bounds = getLocalBounds().removeFromRight(280);
+    bounds.removeFromTop(50).removeFromLeft(50);
+    highlightBasicPiano.setBounds(bounds.removeFromTop(40));
+    basicPianoVisualizeWithColours.setBounds(bounds.removeFromTop(40));
+    basicPianoVisualizeWholeScale.setBounds(bounds.removeFromTop(40));
+    bounds.removeFromTop(40);
+    chordsVisualizeAsDots.setBounds(bounds.removeFromTop(40));
+    chordsVisualizeAsKeys.setBounds(bounds.removeFromTop(40));
+    chordsFadeOutHorizontal.setBounds(bounds.removeFromTop(40));
+    bounds.removeFromTop(40);
+    keyBoardMode.setBounds(bounds.removeFromTop(40));
+    bounds.removeFromTop(40);
+    barsPerScreen.setBounds(bounds.removeFromTop(40));
 }
 /*
  chordsFadeOutHorizontal.setToggleState(ControllerSingleton::chords_fadeOutHorizontal, NotificationType::dontSendNotification);

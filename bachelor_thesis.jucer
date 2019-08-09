@@ -27,6 +27,8 @@
               file="Source/ControllerSingleton.h"/>
       </GROUP>
       <GROUP id="{C323B190-7442-6CCB-D06E-3C11006591E5}" name="View">
+        <FILE id="rMRKf1" name="GameMenu.h" compile="0" resource="0" file="Source/GameMenu.h"/>
+        <FILE id="Mw0tQy" name="GameMenu.cpp" compile="1" resource="0" file="Source/GameMenu.cpp"/>
         <FILE id="SZ1wXM" name="VisuSidePanel.cpp" compile="1" resource="0"
               file="Source/VisuSidePanel.cpp"/>
         <FILE id="RrUX28" name="VisuSidePanel.h" compile="0" resource="0" file="Source/VisuSidePanel.h"/>

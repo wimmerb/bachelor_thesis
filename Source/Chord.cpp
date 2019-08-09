@@ -55,10 +55,10 @@ void Chord::updatePosition(int samplePositionOfSong){
 
 int Chord::IdCount = 0;
 
-std::vector<std::pair<int, int>> Chord::getGuideLines(int func){
-    std::vector<std::pair<int,int>> tmp;
+std::vector<std::tuple<int, int, int>> Chord::getGuideLines(int func){
+    std::vector<std::tuple<int, int, int>> tmp;
     for(int i = 0; i < guideLines.size(); i++){
-        if (guideLines[i].first == func)
+        if (std::get<0>(guideLines[i]) == func)
             tmp.push_back(guideLines[i]);
     }
     return tmp;
@@ -112,37 +112,60 @@ void Chord::initFromChordVector(std::vector<Chord> * cv){
 }
 void Chord::initGuidelines(){
     Chord nextChord = acquireNext();
-    //TODO HIER WÄRE ES AUCH GUT, IM NACHHINEIN - wohl besser im Nachhinein - ODER WÄHRENDDESSEN FÜR JEDES ZIEL DAS MINIMUM ZU WÄHLEN
+    //HIER WÄRE ES AUCH GUT, IM NACHHINEIN - wohl besser im Nachhinein - ODER WÄHRENDDESSEN FÜR JEDES ZIEL DAS MINIMUM ZU WÄHLEN
+    //Argument dagegen: so denkt der Spieler nicht...
     for (int i = 0; i < 12; i++){
         if(functionForNote[i] == FUNC_3 || functionForNote[i] == FUNC_7){
             for (int j = -4; j <=4; j++){
-                int nextChordFunc = nextChord.functionForNote[(i+j+12)%12];
+                int k = (i+j+12)%12;
+                int nextChordFunc = nextChord.functionForNote[k];
                 if(nextChordFunc == FUNC_3 || nextChordFunc == FUNC_7){
                     if(guideLines.size()==0)
-                        guideLines.push_back(std::pair<int, int>(i, j));
+                        guideLines.push_back(std::tuple<int,int,int>(i, j, k));
                     else{
-                        if(guideLines[guideLines.size()-1].first == i){
-                            if(std::abs(guideLines[guideLines.size()-1].second) > std::abs(j)){
-                                while(guideLines[guideLines.size()-1].first == i){
+                        if(std::get<0>(guideLines[guideLines.size()-1]) == i){
+                            if(std::abs(std::get<1>(guideLines[guideLines.size()-1])) > std::abs(j)){
+                                while(std::get<0>(guideLines[guideLines.size()-1]) == i){
                                     guideLines.pop_back();
                                 }
-                                std::cout << "INITGUIDE" << "1." << guideLines[0].second << "2." << j;
-                                guideLines.push_back(std::pair<int, int>(i, j));
+                                std::cout << "INITGUIDE" << "1." << std::get<1>(guideLines[0]) << "2." << j;
+                                guideLines.push_back(std::tuple<int,int,int>(i, j, k));
                             }
                             else{
-                                if(!(std::abs(guideLines[guideLines.size()-1].second) < std::abs(j)))
-                                    guideLines.push_back(std::pair<int, int>(i, j));
+                                if(!(std::abs(std::get<1>(guideLines[guideLines.size()-1])) < std::abs(j)))
+                                    guideLines.push_back(std::tuple<int,int,int>(i, j, k));
                             }
-                            
+                            std::tuple<int,int,int> bla (1,2,3);
                         }
                         else
-                            guideLines.push_back(std::pair<int, int>(i, j));
+                            guideLines.push_back(std::tuple<int,int,int>(i, j, k));
                     }
 //                    std::cout << baseName << chordName<< "::   " << "I:" << i << "   J:" << j << "       ::"<< nextChord.baseName+nextChord.chordName << "\n";
                 }
                 
             }
         }
+    }
+    //removing "from right to left"
+    for(int i = 0; i < 12; i++){
+        std::vector<std::tuple<int, int, int>> tmpLines;
+        for (auto & x : guideLines){
+            if(std::get<2>(x) == i)
+                tmpLines.push_back(x);
+        }
+        int min = 13;
+        for (auto & x : tmpLines){
+            int valRightNow = std::abs(std::get<1>(x));
+            if (valRightNow < min)
+                min = valRightNow;
+        }
+        
+        for (auto & x : tmpLines){
+            int valRightNow = std::abs(std::get<1>(x));
+            if (valRightNow > min)
+                std::remove(guideLines.begin(), guideLines.end(), x);
+        }
+        
     }
 }
 //TODO remove vector POINTER....

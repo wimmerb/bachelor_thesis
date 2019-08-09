@@ -78,7 +78,8 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
         w = 1.0f/ControllerSingleton::barsPerScreen*width;
         h = height/ControllerSingleton::nrOfVisualizedKeys;
         x = 0.0f;
-        y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height)-0.5f*h;
+        y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height);
+        
 
         col = isBlackKey?Colour::fromRGBA(0,0,0,100):Colour::fromRGBA(255,255,255,100);
         
@@ -102,11 +103,56 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
             
         }
 
-
+        Path p;
+        if(isBlackKey){
+            p.startNewSubPath(x+0.4f*w, y-0.45f*h);
+            p.lineTo(x+w, y-0.45f*h);
+            p.lineTo(x+w, y+0.45f*h);
+            p.lineTo(x+0.4f*w, y+0.45f*h);
+        }
+        else{
+            float toTheLeft = 0.5f;
+            float toTheRight = 0.5f;
+            float narrowToTheRight = 0.55f;
+            float narrowToTheLeft = 0.55f;
+            //Left is up, right is down
+            if(!(func == 0 || func == 4 || func == 5 || func == 11)){
+                toTheLeft = 1.0f;
+                toTheRight = 1.0f;
+            }
+            if(func == 4 || func == 11){
+                toTheRight = 1.0f;
+                narrowToTheLeft = 0.5f;
+            }
+            if(func == 0 || func == 5){
+                toTheLeft = 1.0f;
+                narrowToTheRight = 0.5f;
+            }
+            float startX = x                            +1.0f;
+            float middleX = x+0.4f*w                    -1.0f;
+            float endX = x+w                            -1.0f;
+            float leftOuterY = y-toTheLeft*h            +1.0f;
+            float leftInnerY = y-narrowToTheLeft*h      +1.0f;
+            float rightInnerY = y+narrowToTheRight*h    -1.0f;
+            float rightOuterY = y+toTheRight*h          -1.0f;
+            p.startNewSubPath(startX, leftOuterY);
+            p.lineTo(middleX, leftOuterY);
+            p.lineTo(middleX, leftInnerY);
+            p.lineTo(endX, leftInnerY);
+            p.lineTo(endX, rightInnerY);
+            p.lineTo(middleX, rightInnerY);
+            p.lineTo(middleX, rightOuterY);
+            p.lineTo(startX, rightOuterY);
+        }
+        p.closeSubPath();
         g.setColour(col);
-        g.fillRect(x,y,w,h);
-        g.setColour(colourForKeyBorder);
-        g.drawRect(x,y,w,h, thicknessForKeyBorder);
+        g.fillPath(p);
+        g.setColour(Colours::lightgrey);
+        //g.strokePath(p, PathStrokeType((funcType != Chord::FUNC_NAN)?thicknessForKeyBorder*1.5f:thicknessForKeyBorder));
+//        g.setColour(col);
+//        g.fillRect(x,y-0.5f*h,w,h);
+//        g.setColour(Colours::lightgrey);
+//        g.drawRect(x,y-0.5f*h,w,h, (funcType != Chord::FUNC_NAN)?thicknessForKeyBorder*1.5f:thicknessForKeyBorder);
     }
 }
 
@@ -130,6 +176,8 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
     
         for (int i = lowestKeyNr; i <= highestKeyNr; i++){
             float y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height);
+            
+            
             int func = (i+9+12)%12;
             Chord::FunctionType functionType = getFunctionTypeUnderVisuConstraints(c, func);
             if(functionType != Chord::FUNC_NAN){
@@ -139,7 +187,8 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
                     if(layer == 1){
-                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
+                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                                         y3, w, h3);
                         
                     }
                     //if(layer == 0)
@@ -160,11 +209,13 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     //}
                     if(layer == 1){
                         if(ControllerSingleton::chords_visualizeAsDots)
-                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y3, w, h3);
+                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                                         y3, w, h3);
                         if(ControllerSingleton::chords_visualizeAsKeys)
-                            visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                            visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                               y2, w, h2);
                         
-                        std::vector<std::pair<int, int>> guideLines = c.getGuideLines(func);
+                        std::vector<std::tuple<int, int, int>> guideLines = c.getGuideLines(func);
                         Chord nextChord = c.acquireNext();
                         if(guideLines.size() > 0){
                             float w2 = (1.0f/ControllerSingleton::barsPerScreen*nextChord.lengthInBars)*width-10.0f;
@@ -177,8 +228,8 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                             }
                             float x2 = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+positionXNextChord))*width;
                             for(int i = 0; i < guideLines.size(); i++){
-                                float y2_2 = y - guideLines[i].second*h;
-                                visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, g);
+                                float y2_2 = y - 1.0f*std::get<1>(guideLines[i])*h;
+                                visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, height, g);
                                 if(isWrapAround)
                                     visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
                                                        y,
@@ -187,6 +238,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                                                        y2_2,
                                                        w2,
                                                        h3,
+                                                       height,
                                                        g);
                             }
                         }
@@ -319,6 +371,7 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
 void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float relBase, int i, Graphics& g, float height, float width, float x, float y, float w, float h){
 
     //bool isBlackKey = isBlack(func);
+    
     Colour col = Colours::white.interpolatedWith(Colour::fromRGBA(0,0,0,0), isCurrentChord(c)?0.4f:0.75f);
     float x2 = std::max(x, (1.0f/ControllerSingleton::barsPerScreen*(1.0f)*width));
     if(ControllerSingleton::chords_fadeOutHorizontal && isCurrentChord(c)){
@@ -332,7 +385,7 @@ void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionTy
 
 }
 
-void ChordVisualisation::visualizeGuideLine(float x, float y, float w, float x2, float y2, float w2, float hVisu, Graphics& g){
+void ChordVisualisation::visualizeGuideLine(float x, float y, float w, float x2, float y2, float w2, float hVisu, float height, Graphics& g){
     Path p;
     p.startNewSubPath(x+w*0.5f, y);
     p.lineTo(x+w*0.75f, y);

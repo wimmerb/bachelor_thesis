@@ -25,6 +25,8 @@ private:
     ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
     ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
     
+    ToggleButton keyBoardMode {"keyBoardMode"};
+    
     Slider barsPerScreen;
     
     void resized() override;

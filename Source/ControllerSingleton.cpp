@@ -44,6 +44,10 @@ int ControllerSingleton::nrPoints = 30;
 Colour ControllerSingleton::backgroundColor = Colours::darkgrey.interpolatedWith(Colours::darkblue, 0.2f);
 Colour ControllerSingleton::pointsColor = Colours::turquoise;
 
+
+//VisualizationMode
+bool ControllerSingleton::keyBoardMode = true;
+
 //PitchVisualisation
 bool ControllerSingleton::snapPitchToGrid = true;
 

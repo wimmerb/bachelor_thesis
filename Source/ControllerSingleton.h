@@ -35,6 +35,9 @@ public:
     static Colour backgroundColor;
     static Colour pointsColor;
 
+    
+    //VisualizationMode
+    static bool keyBoardMode;
     //PitchVisualisation
     static bool snapPitchToGrid;
     

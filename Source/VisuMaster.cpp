@@ -20,12 +20,8 @@
 
 VisuMaster::VisuMaster(){
     
-    addAndMakeVisible(playButton);
-    playButton.onClick = [&] { ControllerSingleton::isPlaying = true; };
-    addAndMakeVisible(pauseButton);
-    pauseButton.onClick = [&] { ControllerSingleton::isPlaying = false; };
-    addAndMakeVisible(arrowBtn);
-    arrowBtn.onClick = [&] { visuSidePanel->showOrHide (true); };
+    addAndMakeVisible(gameMenu);
+    gameMenu.informParent = [this](const String & s){receiveFromGameMenu(s);};
     
     visuSidePanel.reset(new VisuSidePanel("Visualisation-Settings", 300, false));
     addAndMakeVisible(*visuSidePanel);
@@ -95,13 +91,50 @@ VisuMaster::~VisuMaster()
     openGLContext.detach();
 }
 
+void VisuMaster::receiveFromGameMenu(const String & s){
+    std::cout << "received" << s;
+    if(s == "Burger"){
+        visuSidePanel->showOrHide (true);
+        return;
+    }
+    informParent(s);
+}
+
 //==============================================================================
-void VisuMaster::paint (Graphics& g)
+void VisuMaster::paint(Graphics& g){
+    setExitTime();
+    displayTiming();
+    setEnterTime();
+    
+    
+    if(!ControllerSingleton::keyBoardMode)
+        ppaint(g);
+    else{
+        Image i (Image(Image::ARGB, getHeight()*2, getWidth()*2, true));
+        Graphics graphics (i);
+        graphics.addTransform(AffineTransform().verticalFlip(getWidth()*2));
+        ppaint(graphics);
+        //g.addTransform(AffineTransform().rotated(-0.5f*std::atan(1)*4));
+        g.drawImageTransformed(i, AffineTransform().scaled(0.5f,0.5f).rotated(-0.5f*std::atan(1)*4).translated(0, getHeight()));
+        //g.drawImageAt(i, 0, 0);
+    }
+    
+}
+void VisuMaster::ppaint (Graphics& g)
 {
 //    setExitTime();
 //    double timeSinceLastFrameMs = b-a;
 //    displayTiming();
 //    setEnterTime();
+    //g.addTransform(AffineTransform().rotated(0.5f*atan(1)*4.0f));
+    int height = getHeight();
+    int width = getWidth();
+    if(ControllerSingleton::keyBoardMode){
+        //g.addTransform(AffineTransform().verticalFlip(getHeight()).rotated(-0.5f*std::atan(1)*4).translated(0, getHeight()));
+        width = getHeight()*2;
+        height = getWidth()*2;
+    }
+    
 
     int samplePositionOfSong = SharedResources::samplesPositionOfSong;
     //IDEE: UPDATE und dann RENDER -> Objekte haben eigene Koordinaten?
@@ -132,19 +165,20 @@ void VisuMaster::paint (Graphics& g)
 
 
     //RENDER******************RENDER
-    
-    g.drawImageAt(backgroundImage, getWidth()/ControllerSingleton::barsPerScreen,0);
+    g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
+    g.fillAll();
+    //g.drawImageAt(backgroundImage, width/ControllerSingleton::barsPerScreen,0);
     //createBackGroundSpace(g);
     
 
 
     
-    chordVisualizer->visualizeBackgroundPiano(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
+    chordVisualizer->visualizeBackgroundPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
     
     
     if(ControllerSingleton::dropShadows){
         DropShadow * bla = new DropShadow(Colour::fromRGBA(0,0,0,120), 20, Point<int>(-10,0));
-        bla -> drawForRectangle(g, *(new Rectangle<int>(getWidth()/ControllerSingleton::barsPerScreen, 0, 1, getHeight())));
+        bla -> drawForRectangle(g, *(new Rectangle<int>(width/ControllerSingleton::barsPerScreen, 0, 1, height)));
     }
     
     
@@ -158,21 +192,20 @@ void VisuMaster::paint (Graphics& g)
     
     
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
-        chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth(), 1);
+        chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 1);
     }
     
     g.setColour(Colours::black);//TODO WTF
-    g.drawImage(backgroundImage, Rectangle<float>(0, 0, getWidth()/ControllerSingleton::barsPerScreen, getHeight()));
-    chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
+    g.drawImage(backgroundImage, Rectangle<float>(0, 0, width/ControllerSingleton::barsPerScreen, height));
+    chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
     
-    setEnterTime();
+    
     
     for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++) {
-        chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) getHeight(), (float) getWidth(), 0);
+        chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) height, (float) width, 0);
     }
     
-    setExitTime();
-    displayTiming();
+    
     
     
     
@@ -202,7 +235,7 @@ void VisuMaster::paint (Graphics& g)
         }
         if(tmpDot.first == 0.0f)
             continue;
-        y = ((visu_lowerBound+visu_range)-tmpDot.first)/visu_range*getHeight();
+        y = ((visu_lowerBound+visu_range)-tmpDot.first)/visu_range*height;
         int second = tmpDot.second>samplePositionOfFirst?tmpDot.second-SharedResources::sampleCountOfSong:tmpDot.second;
         x = ((float)(second-samplePositionOfFirst))/(float)SharedResources::samplerate*1000.0f/(float)ControllerSingleton::timePerBarMs; //-> now Position in Bars
         if(x < -1.0f)
@@ -210,8 +243,8 @@ void VisuMaster::paint (Graphics& g)
         //std::cout << "second:" << second << "\n";
         //std::cout << "X:" << x << "\n";
         //std::cout << "Y:" << y << "\n";
-        x = (x+1.0f)/4.0f * getWidth();
-        if(i == 0 || std::abs(y-oldy) > 0.1f*getHeight()){
+        x = (x+1.0f)/4.0f * width;
+        if(i == 0 || std::abs(y-oldy) > 0.1f*height){
             path.startNewSubPath(x,y);
         }
 
@@ -223,7 +256,7 @@ void VisuMaster::paint (Graphics& g)
     }
     //std::cout << "PATHEND\n";
     g.setColour(ControllerSingleton::pointsColor);
-    g.strokePath(path, PathStrokeType (getHeight()/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)getWidth()/(float)getHeight())));
+    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);
     //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
@@ -288,10 +321,8 @@ void VisuMaster::reAdjustWindow(float p, float timeSinceLastFrameMs){
 
 void VisuMaster::resized()
 {
-    playButton.setBounds(getWidth() - 3*20-10,10,20,20);
-    pauseButton.setBounds(getWidth() - 2*20-10,10,20,20);
+    gameMenu.setBounds(getLocalBounds().removeFromTop(visuSidePanel->getTitleBarHeight()).removeFromRight(200));
     //visuSidePanel->showOrHide(false);
-    arrowBtn.setBounds(getWidth() - 20-10,10,20,20);
     //points->resize();
     // This is called when the OpenGLComponent is resized.
     // If you add any child components, this is where you should

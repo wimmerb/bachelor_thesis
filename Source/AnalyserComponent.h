@@ -133,6 +133,31 @@ public:
     //==============================================================================
     void prepareToPlay (int, double) override {}
     void releaseResources() override          {}
+    
+    void receiveControls (const String & s){
+        if(s == "Play"){
+            isPlaying = true;
+        }
+        if(s == "Pause"){
+            isPlaying = false;
+        }
+        if(s == "Stop"){
+            handleStop();
+        }
+    }
+    
+    void handleStop(){
+        receiveControls ("Pause");
+        wantToStop = true;
+    }
+    
+    void reset(){
+        SharedResources::countIn = true;
+        freshStart = true;
+        counterFilePositionToPlay = 0;
+        positionToPlay = 0;
+        
+    }
 
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
     {
@@ -177,7 +202,26 @@ public:
 
         auto outputSamplesRemaining = bufferToFill.numSamples;                                  // [8]
         auto outputSamplesOffset = bufferToFill.startSample;                                    // [9]
-
+        
+        double fadeVolumeOld = fadeVolume;
+        
+        if(!isPlaying && fadeVolume == 0.0){
+            if(wantToStop){
+                reset();
+                wantToStop = false;
+            }
+            return;
+        }
+        
+        
+        if ((!isPlaying && fadeVolume == 1.0) || (isPlaying && fadeVolume == 0.0)){
+            fadeVolume = 1.0 - fadeVolume;
+            if(isPlaying && freshStart){
+                fadeVolumeOld = 1.0;
+                freshStart = false;
+            }
+        }
+        
         while (outputSamplesRemaining > 0)
         {
             
@@ -191,16 +235,6 @@ public:
 
             for (auto channel = 0; channel < numOutputChannels; ++channel)
             {
-                double fadeVolumeNew = 0.0;
-                if(!ControllerSingleton::isPlaying){
-                    fadeVolumeNew = std::max(0.0, fadeVolume-0.05);
-                }
-                else{
-                    fadeVolumeNew = std::min(1.0, fadeVolume + 0.05);
-                }
-                if(fadeVolume == 0.0 && fadeVolumeNew == 0.0){
-                    return;
-                }
                 if(SharedResources::countIn){
                     bufferToFill.buffer->copyFrom (channel,                                         // [12]
                                                    outputSamplesOffset,                             //  [12.1]
@@ -217,8 +251,7 @@ public:
                                                    positionToPlay,                                  //  [12.4]
                                                    samplesThisTime);                                //  [12.5]
                 }
-                bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolume, fadeVolumeNew);
-                fadeVolume = fadeVolumeNew;
+                bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolumeOld, fadeVolume);
             }
 
             outputSamplesRemaining -= samplesThisTime;                                          // [13]
@@ -343,7 +376,10 @@ public:
 private:
 
     //volumeFade
-    double fadeVolume = 1.0;
+    double fadeVolume = 0.0;
+    bool freshStart = true;
+    bool isPlaying = false;
+    bool wantToStop = false;
     //stub
     int i = 0;
 
@@ -358,7 +394,7 @@ private:
     dywapitchtracker * tracker = new dywapitchtracker;
     double * tracked;
 
-
+    
 
     //Deviceselector
     AudioDeviceSelectorComponent audioSetupComp;

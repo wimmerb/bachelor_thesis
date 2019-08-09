@@ -56,8 +56,8 @@ public:
     
     static float totalLengthOfSongInBars;
     
-    std::vector<std::pair<int, int>> guideLines;
-    std::vector<std::pair<int, int>> getGuideLines(int func);
+    std::vector<std::tuple<int, int, int>> guideLines;
+    std::vector<std::tuple<int, int, int>> getGuideLines(int func);
     //==========================================================================
     
 private:

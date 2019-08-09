@@ -32,7 +32,7 @@ private:
     void visualizeNoteAsKey(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float base, int i, Graphics& g, float height, float width, float x, float y, float w, float h);
     void visualizeNoteAsDot(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float base, int i, Graphics& g, float height, float width, float x, float y, float w, float h);
     void visualizeNoteAsDotBackground(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float relBase, int i, Graphics& g, float height, float width, float x, float y, float w, float h);
-    void visualizeGuideLine(float x, float y, float w, float x2, float y2, float w2, float hVisu, Graphics& g);
+    void visualizeGuideLine(float x, float y, float w, float x2, float y2, float w2, float hVisu, float height, Graphics& g);
     Chord::FunctionType getFunctionTypeUnderVisuConstraints(Chord c, int func);
     bool isOnScreen(Chord c);
 

@@ -16,6 +16,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(mainMenu.get());
     setSize(200*2*1.5f, 360*2*1.5f);
     mainMenu->informParent = [this](const String & s){handleInformation(s);};
+    
 }
 
 MainComponent::~MainComponent()
@@ -36,7 +37,10 @@ void MainComponent::handleInformation(const String & s){
     if( s == "SwitchToGameView"){
         removeChildComponent(mainMenu.get());
         analyser.reset(new AnalyserComponent);
+        
         visuMaster.reset(new VisuMaster());
+        
+        visuMaster->informParent = [this](const String & s){analyser->receiveControls(s);};
         addAndMakeVisible(visuMaster.get());
         resized();
     }
