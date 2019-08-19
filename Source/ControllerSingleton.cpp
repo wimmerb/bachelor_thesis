@@ -39,14 +39,14 @@ int ControllerSingleton::bpb = 4;
 int ControllerSingleton::bpm = 90;
 float ControllerSingleton::timePerBarMs = 60000.0f/((float)bpm)*(float)bpb;
 
-int ControllerSingleton::nrOfVisualizedKeys = 18;
+int ControllerSingleton::nrOfVisualizedKeys = 20;
 int ControllerSingleton::nrPoints = 30;
 Colour ControllerSingleton::backgroundColor = Colours::darkgrey.interpolatedWith(Colours::darkblue, 0.2f);
 Colour ControllerSingleton::pointsColor = Colours::turquoise;
 
 
 //VisualizationMode
-bool ControllerSingleton::keyBoardMode = true;
+bool ControllerSingleton::keyBoardMode = false;
 
 //PitchVisualisation
 bool ControllerSingleton::snapPitchToGrid = true;
@@ -57,6 +57,7 @@ bool ControllerSingleton::chords_visualizeAsDots = true;
 bool ControllerSingleton::chords_visualizeAsKeys = false;
 bool ControllerSingleton::chords_visualizeWithColours = true;
 bool ControllerSingleton::chords_fadeOutHorizontal = false;
+bool ControllerSingleton::chords_visualizeGuidelines = true;
 
 //BasicPianoVisualisation
 bool ControllerSingleton::basicp_highlightBasicPiano = true;

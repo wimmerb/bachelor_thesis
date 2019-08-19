@@ -24,6 +24,7 @@ private:
     ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
     ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
     ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
+    ToggleButton chordsVisualizeGuideline {"chordsVisualizeGuideline"};
     
     ToggleButton keyBoardMode {"keyBoardMode"};
     

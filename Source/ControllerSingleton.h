@@ -47,6 +47,7 @@ public:
     static bool * chords_visuArray;
     static bool chords_visualizeWithColours;
     static bool chords_fadeOutHorizontal;
+    static bool chords_visualizeGuidelines;
     
     //BasicPianoVisualisation
     static bool basicp_highlightBasicPiano;

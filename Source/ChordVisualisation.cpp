@@ -227,19 +227,21 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                                 isWrapAround = true;
                             }
                             float x2 = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+positionXNextChord))*width;
-                            for(int i = 0; i < guideLines.size(); i++){
-                                float y2_2 = y - 1.0f*std::get<1>(guideLines[i])*h;
-                                visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, height, g);
-                                if(isWrapAround)
-                                    visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
-                                                       y,
-                                                       w,
-                                                       x2-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
-                                                       y2_2,
-                                                       w2,
-                                                       h3,
-                                                       height,
-                                                       g);
+                            if(ControllerSingleton::chords_visualizeGuidelines){
+                                for(int i = 0; i < guideLines.size(); i++){
+                                    float y2_2 = y - 1.0f*std::get<1>(guideLines[i])*h;
+                                    visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, height, g);
+                                    if(isWrapAround)
+                                        visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
+                                                           y,
+                                                           w,
+                                                           x2-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
+                                                           y2_2,
+                                                           w2,
+                                                           h3,
+                                                           height,
+                                                           g);
+                                }
                             }
                         }
                     }

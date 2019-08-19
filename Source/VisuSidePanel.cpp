@@ -19,6 +19,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         basicPianoVisualizeWithColours.setToggleState(ControllerSingleton::basicP_visualizeWithColours, NotificationType::dontSendNotification);
         chordsVisualizeAsDots.setToggleState(ControllerSingleton::chords_visualizeAsDots, NotificationType::dontSendNotification);
         chordsVisualizeAsKeys.setToggleState(ControllerSingleton::chords_visualizeAsKeys, NotificationType::dontSendNotification);
+        chordsVisualizeGuideline.setToggleState(ControllerSingleton::chords_visualizeGuidelines, NotificationType::dontSendNotification);
         keyBoardMode.setToggleState(ControllerSingleton::keyBoardMode, NotificationType::dontSendNotification);
         
         barsPerScreen.setSliderStyle(Slider::LinearHorizontal);
@@ -33,6 +34,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         addAndMakeVisible(chordsVisualizeAsDots);
         addAndMakeVisible(chordsVisualizeAsKeys);
         addAndMakeVisible(chordsFadeOutHorizontal);
+        addAndMakeVisible(chordsVisualizeGuideline);
         addAndMakeVisible(keyBoardMode);
         addAndMakeVisible(barsPerScreen);
         
@@ -42,6 +44,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         chordsVisualizeAsDots.onClick = [this]{ControllerSingleton::chords_visualizeAsDots = chordsVisualizeAsDots.getToggleState();};
         chordsVisualizeAsKeys.onClick = [this]{ControllerSingleton::chords_visualizeAsKeys = chordsVisualizeAsKeys.getToggleState();};
         chordsFadeOutHorizontal.onClick = [this]{ControllerSingleton::chords_fadeOutHorizontal = chordsFadeOutHorizontal.getToggleState();};
+        chordsVisualizeGuideline.onClick = [this]{ControllerSingleton::chords_visualizeGuidelines = chordsVisualizeGuideline.getToggleState();};
         keyBoardMode.onClick = [this]{ControllerSingleton::keyBoardMode = keyBoardMode.getToggleState();};
         
         barsPerScreen.setRange(2.0, 10.0, 1.0);
@@ -70,6 +73,7 @@ void VisuSidePanel::resized(){
     chordsVisualizeAsDots.setBounds(bounds.removeFromTop(40));
     chordsVisualizeAsKeys.setBounds(bounds.removeFromTop(40));
     chordsFadeOutHorizontal.setBounds(bounds.removeFromTop(40));
+    chordsVisualizeGuideline.setBounds(bounds.removeFromTop(40));
     bounds.removeFromTop(40);
     keyBoardMode.setBounds(bounds.removeFromTop(40));
     bounds.removeFromTop(40);
