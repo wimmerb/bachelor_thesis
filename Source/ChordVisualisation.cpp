@@ -105,28 +105,73 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
 
         Path p;
         if(isBlackKey){
-            p.startNewSubPath(x+0.4f*w, y-0.45f*h);
-            p.lineTo(x+w, y-0.45f*h);
-            p.lineTo(x+w, y+0.45f*h);
-            p.lineTo(x+0.4f*w, y+0.45f*h);
+            p.startNewSubPath(x+0.4f*w, y-0.5f*h);
+            p.lineTo(x+w, y-0.5f*h);
+            p.lineTo(x+w, y+0.5f*h);
+            p.lineTo(x+0.4f*w, y+0.5f*h);
         }
         else{
+            float heightOfWhite = h*12.0f/7.0f;
             float toTheLeft = 0.5f;
             float toTheRight = 0.5f;
-            float narrowToTheRight = 0.55f;
-            float narrowToTheLeft = 0.55f;
+            float narrowToTheRight = 0.5f;
+            float narrowToTheLeft = 0.5f;
+            std::map<int, int> nthWhiteKey = {
+                {0,0},
+                {2,1},
+                {4,2},
+                {5,3},
+                {7,4},
+                {9,5},
+                {11,6},
+            };
             //Left is up, right is down
+            
             if(!(func == 0 || func == 4 || func == 5 || func == 11)){
                 toTheLeft = 1.0f;
                 toTheRight = 1.0f;
             }
             if(func == 4 || func == 11){
                 toTheRight = 1.0f;
-                narrowToTheLeft = 0.5f;
             }
             if(func == 0 || func == 5){
                 toTheLeft = 1.0f;
-                narrowToTheRight = 0.5f;
+            }
+            if(func == 0 || func == 2 || func == 4){
+                float desiredHeight = 5.0f/3.0f;
+                float currentHeight = toTheLeft + toTheRight;
+                float discrepancy = std::abs(desiredHeight-currentHeight);
+                switch(func){
+                    case 0:
+                        toTheLeft += discrepancy;
+                        break;
+                    case 2:
+                        toTheLeft -= 0.5*discrepancy;
+                        toTheRight -= 0.5*discrepancy;
+                        break;
+                    case 4:
+                        toTheRight += discrepancy;
+                        break;
+                }
+            }
+            if(func == 5 || func == 7 || func == 9 || func == 11){
+                float desiredHeight = 7.0f/4.0f;
+                float currentHeight = toTheLeft + toTheRight;
+                float discrepancy = std::abs(desiredHeight-currentHeight);
+                switch(func){
+                    case 5:
+                        toTheLeft += discrepancy;
+                        break;
+                    case 7:
+                        toTheRight -= discrepancy;
+                        break;
+                    case 9:
+                        toTheLeft -= discrepancy;
+                        break;
+                    case 11:
+                        toTheRight += discrepancy;
+                        break;
+                }
             }
             float startX = x                            +1.0f;
             float middleX = x+0.4f*w                    -1.0f;
