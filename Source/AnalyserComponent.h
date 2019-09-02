@@ -117,7 +117,7 @@ public:
             for(int i = 0; i < ControllerSingleton::bpb; i++){
                 counterReader->read(&counterFileToPlay, i*stepSize, std::min(stepSize, (int)counterReader->lengthInSamples), 0, true, true);
             }
-            setAudioChannels (0, (int) counterReader->numChannels);
+            setAudioChannels (2, (int) counterReader->numChannels);
             counterFilePositionToPlay = 0;
             SharedResources::countIn = true;
         }
@@ -189,8 +189,6 @@ public:
             }
 
         }
-        //setExitTime();
-        //displayTiming();
 
 //        if(!isActivated)
 //            return;
@@ -200,8 +198,8 @@ public:
         auto numInputChannels = fileToPlay.getNumChannels();
         auto numOutputChannels = bufferToFill.buffer->getNumChannels();
 
-        auto outputSamplesRemaining = bufferToFill.numSamples;                                  // [8]
-        auto outputSamplesOffset = bufferToFill.startSample;                                    // [9]
+        auto outputSamplesRemaining = bufferToFill.numSamples;
+        auto outputSamplesOffset = bufferToFill.startSample;
         
         double fadeVolumeOld = fadeVolume;
         
@@ -236,26 +234,26 @@ public:
             for (auto channel = 0; channel < numOutputChannels; ++channel)
             {
                 if(SharedResources::countIn){
-                    bufferToFill.buffer->copyFrom (channel,                                         // [12]
-                                                   outputSamplesOffset,                             //  [12.1]
-                                                   counterFileToPlay,                                      //  [12.2]
-                                                   channel % numInputChannels,                      //  [12.3]
-                                                   counterFilePositionToPlay,                                  //  [12.4]
-                                                   samplesThisTime);                                //  [12.5]
+                    bufferToFill.buffer->copyFrom (channel,
+                                                   outputSamplesOffset,
+                                                   counterFileToPlay,
+                                                   channel % numInputChannels,
+                                                   counterFilePositionToPlay,
+                                                   samplesThisTime);
                 }
                 else{
-                    bufferToFill.buffer->copyFrom (channel,                                         // [12]
-                                                   outputSamplesOffset,                             //  [12.1]
-                                                   fileToPlay,                                      //  [12.2]
-                                                   channel % numInputChannels,                      //  [12.3]
-                                                   positionToPlay,                                  //  [12.4]
-                                                   samplesThisTime);                                //  [12.5]
+                    bufferToFill.buffer->copyFrom (channel,
+                                                   outputSamplesOffset,
+                                                   fileToPlay,
+                                                   channel % numInputChannels,
+                                                   positionToPlay,
+                                                   samplesThisTime);
                 }
                 bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolumeOld, fadeVolume);
             }
 
-            outputSamplesRemaining -= samplesThisTime;                                          // [13]
-            outputSamplesOffset += samplesThisTime;                                             // [14]
+            outputSamplesRemaining -= samplesThisTime;
+            outputSamplesOffset += samplesThisTime;
             if(SharedResources::countIn){
                 counterFilePositionToPlay += samplesThisTime;
                 positionToPlay = 0-counterFileToPlay.getNumSamples()+counterFilePositionToPlay+SharedResources::sampleCountOfSong;
@@ -266,9 +264,9 @@ public:
                 }
             }
             else{
-                positionToPlay += samplesThisTime;                                                        // [15]
+                positionToPlay += samplesThisTime;
                 if (positionToPlay == fileToPlay.getNumSamples())
-                    positionToPlay = 0;                                                                   // [16]
+                    positionToPlay = 0;
             }
 
             
@@ -309,10 +307,10 @@ public:
             
             //tested if seen by others -> CHECK
             //SharedResources::trackedPitch = 1.0+0.15*std::sin(positionToPlay*0.0006);
-            if( (static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/100.0)))>95.0    )
-                SharedResources::trackedPitch = 1.0 + 0.4*(((static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/2.0))))-1.0f);
-            
-            SharedResources::trackedPitch = SharedResources::trackedPitch+0.002*std::sin(positionToPlay*0.0007);
+//            if( (static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/100.0)))>95.0    )
+//                SharedResources::trackedPitch = 1.0 + 0.4*(((static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/2.0))))-1.0f);
+//
+//            SharedResources::trackedPitch = SharedResources::trackedPitch+0.002*std::sin(positionToPlay*0.0007);
             SharedResources::pitchHistory[SharedResources::pitchHistoryIndex = (SharedResources::pitchHistoryIndex+1)%SharedResources::pitchHistorySize]
             = std::pair<double, int>(SharedResources::trackedPitch, positionToPlay);
 

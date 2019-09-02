@@ -81,7 +81,7 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
         y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height);
         
 
-        col = isBlackKey?Colour::fromRGBA(0,0,0,100):Colour::fromRGBA(255,255,255,100);
+        col = isBlackKey?Colour::fromRGBA(0,0,0,60):Colour::fromRGBA(255,255,255,100);
         
         Chord::FunctionType funcType = currentlyPlayingNotes[func];
         if(funcType != Chord::FUNC_NAN){

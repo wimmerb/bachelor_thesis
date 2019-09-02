@@ -68,7 +68,7 @@ VisuMaster::VisuMaster(){
     Chord::initFromChordVector(chordVector);
     chordVisualizer = new ChordVisualisation();
     
-    visu_lowerBound = 0.5f;
+    visu_lowerBound = 1.0f+1.0f/12.0f*3.0f-1.0f/12.0f/2.0f;
     visu_range = (float)ControllerSingleton::nrOfVisualizedKeys/12.0f;
 
     setEnterTime();
@@ -166,7 +166,7 @@ void VisuMaster::ppaint (Graphics& g)
 
     //RENDER******************RENDER
     g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
-    g.fillAll();
+    g.fillAll(Colours::grey);
     //g.drawImageAt(backgroundImage, width/ControllerSingleton::barsPerScreen,0);
     //createBackGroundSpace(g);
     
@@ -196,6 +196,7 @@ void VisuMaster::ppaint (Graphics& g)
     }
     
     g.setColour(Colours::black);//TODO WTF
+    //g.fillAll(Colours::grey);
     g.drawImage(backgroundImage, Rectangle<float>(0, 0, width/ControllerSingleton::barsPerScreen, height));
     chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
     
@@ -254,8 +255,13 @@ void VisuMaster::ppaint (Graphics& g)
         oldy = y;
         oldx = x;
     }
+    std::cout << "pitch:" <<SharedResources::pitchHistory[pitchHistoryIndex].first <<"\n";
     //std::cout << "PATHEND\n";
     g.setColour(ControllerSingleton::pointsColor);
+    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
+    path.applyTransform(AffineTransform().translated(0, -1.0f*getHeight()));
+    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
+    path.applyTransform(AffineTransform().translated(0, 2.0f*getHeight()));
     g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
     //renderdots
     //g.setColour(ControllerSingleton::pointsColor);

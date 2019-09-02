@@ -39,7 +39,7 @@ int ControllerSingleton::bpb = 4;
 int ControllerSingleton::bpm = 90;
 float ControllerSingleton::timePerBarMs = 60000.0f/((float)bpm)*(float)bpb;
 
-int ControllerSingleton::nrOfVisualizedKeys = 20;
+int ControllerSingleton::nrOfVisualizedKeys = 24;
 int ControllerSingleton::nrPoints = 30;
 Colour ControllerSingleton::backgroundColor = Colours::darkgrey.interpolatedWith(Colours::darkblue, 0.2f);
 Colour ControllerSingleton::pointsColor = Colours::turquoise;
