@@ -101,6 +101,28 @@ void VisuMaster::receiveFromGameMenu(const String & s){
 }
 
 //==============================================================================
+void VisuMaster::update(){
+    //UPDATE******************UPDATE
+    {
+        
+        //IDEE: bilde reihe ab currentChord und mache das ganze NUR von der aktuellen Sampleposition abhängig.
+        std::vector<Chord>::iterator it;
+        for (it = chordVector->begin(); it != chordVector->end(); ++it){
+            //it->updatePosition(samplePositionOfSong);
+            it->updatePosition(SharedResources::samplesPositionOfSong);
+        }
+        float pitch = SharedResources::trackedPitch;
+        if(ControllerSingleton::snapPitchToGrid){
+            pitch = std::floor(pitch)+(round(fmod(pitch, 1.0f)*12.0f))/12.0f;
+        }
+        
+        
+        points->followY(pitch);
+    }
+    //reAdjustWindow(pitch, timeSinceLastFrameMs);
+    //UPDATE******************UPDATE
+}
+
 void VisuMaster::paint(Graphics& g){
     setExitTime();
     displayTiming();
@@ -120,8 +142,7 @@ void VisuMaster::paint(Graphics& g){
     }
     
 }
-void VisuMaster::ppaint (Graphics& g)
-{
+void VisuMaster::ppaint (Graphics& g){
 //    setExitTime();
 //    double timeSinceLastFrameMs = b-a;
 //    displayTiming();
@@ -136,144 +157,56 @@ void VisuMaster::ppaint (Graphics& g)
     }
     
 
-    int samplePositionOfSong = SharedResources::samplesPositionOfSong;
-    //IDEE: UPDATE und dann RENDER -> Objekte haben eigene Koordinaten?
-
-
-    //UPDATE******************UPDATE
-
-
-    //reposition chords;
-    int bpm = 120;
-    float timePerBar  = 60000.0f/((float)bpm)*4;
-    //IDEE: bilde reihe ab currentChord und mache das ganze NUR von der aktuellen Sampleposition abhängig.
-    std::vector<Chord>::iterator it;
-    for (it = chordVector->begin(); it != chordVector->end(); ++it){
-        //it->updatePosition(samplePositionOfSong);
-        it->updatePosition(SharedResources::samplesPositionOfSong);
-    }
-    float pitch = SharedResources::trackedPitch;
-    if(ControllerSingleton::snapPitchToGrid){
-        pitch = std::floor(pitch)+(round(fmod(pitch, 1.0f)*12.0f))/12.0f;
-    }
-
-
-    points->followY(pitch);
-    //UPDATE******************UPDATE
-
-    //reAdjustWindow(pitch, timeSinceLastFrameMs);
-
 
     //RENDER******************RENDER
-    g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
-    g.fillAll(Colours::grey);
-    //g.drawImageAt(backgroundImage, width/ControllerSingleton::barsPerScreen,0);
-    //createBackGroundSpace(g);
-    
+    {
+        g.setTiledImageFill(backgroundImage, 0, 0, 1.0f);
+        g.fillAll(Colours::grey);
+        //g.drawImageAt(backgroundImage, width/ControllerSingleton::barsPerScreen,0);
+        //createBackGroundSpace(g);
+        
 
 
-    
-    chordVisualizer->visualizeBackgroundPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
-    
-    
-    if(ControllerSingleton::dropShadows){
-        DropShadow * bla = new DropShadow(Colour::fromRGBA(0,0,0,120), 20, Point<int>(-10,0));
-        bla -> drawForRectangle(g, *(new Rectangle<int>(width/ControllerSingleton::barsPerScreen, 0, 1, height)));
-    }
-    
-    
-    int indexOfLastChord = 0;
-    for(int i = 0; i < chordVector->size(); i++){
-        if(chordVisualizer->isCurrentChord((*(chordVector))[i])){
-            indexOfLastChord = ((i-1)+chordVector->size())%chordVector->size();
-            break;
+        
+        chordVisualizer->visualizeBackgroundPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
+        
+        int indexOfLastChord = 0;
+        for(int i = 0; i < chordVector->size(); i++){
+            if(chordVisualizer->isCurrentChord((*(chordVector))[i])){
+                indexOfLastChord = ((i-1)+(int)chordVector->size())%chordVector->size();
+                break;
+            }
         }
-    }
-    
-    
-    for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
-        chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 1);
-    }
-    
-    g.setColour(Colours::black);//TODO WTF
-    //g.fillAll(Colours::grey);
-    g.drawImage(backgroundImage, Rectangle<float>(0, 0, width/ControllerSingleton::barsPerScreen, height));
-    chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
-    
-    
-    
-    for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++) {
-        chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) height, (float) width, 0);
-    }
-    
-    
-    
-    
-    
-    /*
-    chordVisualizer->visualize(*chord, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());//nrVisualizedKeys wegmachen
-    chordVisualizer->visualize(*chord2, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
-    chordVisualizer->visualize(*chord3, visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());*/
-
-
-
-    //createNoteText(visu_lowerBound, visu_range, g, (float)getHeight(), (float)getWidth());
-    
-    //renderNoteHistory
-    
-    Path path = Path();
-    //std::cout << "PATH\n";
-    int pitchHistoryIndex = SharedResources::pitchHistoryIndex;
-    int samplePositionOfFirst = 0;
-    float y = 0.0f;
-    float x = 0.0f;
-    float oldy = 0.0f;
-    float oldx = 0.0f;
-    for(int i = 0; i < SharedResources::pitchHistorySize; i++){
-        std::pair<double, int> tmpDot = SharedResources::pitchHistory[(pitchHistoryIndex-i+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize];
-        if(i==0){
-            samplePositionOfFirst = tmpDot.second;
+        Chord wrapAroundChord = (*(chordVector))[indexOfLastChord];
+        wrapAroundChord.positionX -= Chord::totalLengthOfSongInBars;
+        
+        {   //Keys
+            for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
+                chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 0.0f);
+            }
         }
-        if(tmpDot.first == 0.0f)
-            continue;
-        y = ((visu_lowerBound+visu_range)-tmpDot.first)/visu_range*height;
-        int second = tmpDot.second>samplePositionOfFirst?tmpDot.second-SharedResources::sampleCountOfSong:tmpDot.second;
-        x = ((float)(second-samplePositionOfFirst))/(float)SharedResources::samplerate*1000.0f/(float)ControllerSingleton::timePerBarMs; //-> now Position in Bars
-        if(x < -1.0f)
-            break;
-        //std::cout << "second:" << second << "\n";
-        //std::cout << "X:" << x << "\n";
-        //std::cout << "Y:" << y << "\n";
-        x = (x+1.0f)/4.0f * width;
-        if(i == 0 || std::abs(y-oldy) > 0.1f*height){
-            path.startNewSubPath(x,y);
+        
+        {   //Guidelines
+            for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
+                chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 0.5f);
+            }
+            chordVisualizer->visualize(wrapAroundChord, visu_lowerBound, visu_range, g, (float)height, (float)width, 0.5f);
         }
-
-        else{
-            path.lineTo(x,y);
+        
+        
+        g.setColour(Colours::black);//TODO WTF
+        //g.fillAll(Colours::grey);
+        g.drawImage(backgroundImage, Rectangle<float>(0, 0, width*ControllerSingleton::basicp_ScreenPortion, height));
+        chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
+        
+        
+        {   //Dots
+            for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++) {
+                chordVisualizer->visualize((*(chordVector))[i % chordVector->size()], visu_lowerBound, visu_range, g, (float) height, (float) width, 1.0f);
+            }
         }
-        oldy = y;
-        oldx = x;
+    
     }
-    std::cout << "pitch:" <<SharedResources::pitchHistory[pitchHistoryIndex].first <<"\n";
-    //std::cout << "PATHEND\n";
-    g.setColour(ControllerSingleton::pointsColor);
-    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
-    path.applyTransform(AffineTransform().translated(0, -1.0f*getHeight()));
-    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
-    path.applyTransform(AffineTransform().translated(0, 2.0f*getHeight()));
-    g.strokePath(path, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
-    //renderdots
-    //g.setColour(ControllerSingleton::pointsColor);
-    //points->visualize(visu_lowerBound, visu_range, getHeight(), g);
-    
-    
-    //RENDER******************RENDER
-    /*
-    setExitTime();
-    displayTiming();
-    setEnterTime();
-     */
 }
 
 
@@ -325,6 +258,8 @@ void VisuMaster::reAdjustWindow(float p, float timeSinceLastFrameMs){
     visu_lowerBound += currScreenSpeed/maxScreenSpeed/12*timeSinceLastFrameMs/(1000/ControllerSingleton::fps);
 }
 
+
+
 void VisuMaster::resized()
 {
     gameMenu.setBounds(getLocalBounds().removeFromTop(visuSidePanel->getTitleBarHeight()).removeFromRight(200));
@@ -335,9 +270,6 @@ void VisuMaster::resized()
     // update their positions.
     
 }
-
-void VisuMaster::update(){}
-
 
 void VisuMaster::createBackGroundSpace(Graphics &g){
 
@@ -370,42 +302,7 @@ void VisuMaster::createNoteText(float visu_lB, float visu_r, Graphics& g, float 
     float base = std::round(visu_lB - (fmod(visu_lB, 1.0f)));
     int highestKeyNr = (int)std::ceil((visu_lB+visu_r-base)*12.0f);
 
-    g.setColour(Colours::black);
-    for (int i = lowestKeyNr; i <= highestKeyNr; i++){
-        int func = (i+9)%12;
-
-        float h = height/ControllerSingleton::nrOfVisualizedKeys*2.0f;
-        float y = ((visu_lB+visu_r - (base+(float) i / 12.0f))/visu_r*height)-0.5f*h;
-        //float y = ((visu_lB+visu_r - (base+(float) i / (float)nrVisualizedKeys))/visu_r*height)-0.5f*h;
-        String s = "none";
-        switch(func){
-            case 0:
-                s = "C";
-                break;
-            case 2:
-                s = "D";
-                break;
-            case 4:
-                s = "E";
-                break;
-            case 5:
-                s = "F";
-                break;
-            case 7:
-                s = "G";
-                break;
-            case 9:
-                s = "A";
-                break;
-            case 11:
-                s = "B";
-                break;
-        }
-        if(s != "none"){
-            g.drawText(s, 0.0f, y, width/ControllerSingleton::barsPerScreen*0.95f, h, Justification::right);
-        }
-
-    }
+    
 
 
 }

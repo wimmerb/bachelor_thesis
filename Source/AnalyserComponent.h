@@ -122,7 +122,6 @@ public:
             SharedResources::countIn = true;
         }
         //isActivated = true;
-        
     }
 
     ~AnalyserComponent()
@@ -305,14 +304,15 @@ public:
                 }
             }
             
+            
+            
             //tested if seen by others -> CHECK
-            //SharedResources::trackedPitch = 1.0+0.15*std::sin(positionToPlay*0.0006);
-//            if( (static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/100.0)))>95.0    )
-//                SharedResources::trackedPitch = 1.0 + 0.4*(((static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/2.0))))-1.0f);
-//
-//            SharedResources::trackedPitch = SharedResources::trackedPitch+0.002*std::sin(positionToPlay*0.0007);
+            SharedResources::trackedPitch = 2.0+0.15*std::sin(positionToPlay*0.0001);
+            if(std::abs(SharedResources::trackedPitch) > 1000.0f){
+                std::cout<< "GAVEHIMNAN";
+            }
             SharedResources::pitchHistory[SharedResources::pitchHistoryIndex = (SharedResources::pitchHistoryIndex+1)%SharedResources::pitchHistorySize]
-            = std::pair<double, int>(SharedResources::trackedPitch, positionToPlay);
+            = std::pair<double, int>(SharedResources::trackedPitch, fftSize);
 
             nextFFTBlockReady = false;
 

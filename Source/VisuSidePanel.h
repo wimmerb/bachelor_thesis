@@ -20,12 +20,21 @@ private:
     ToggleButton highlightBasicPiano {"highlightBasicPiano"};
     ToggleButton basicPianoVisualizeWholeScale {"basicPianoVisualizeWholeScale"};
     ToggleButton basicPianoVisualizeWithColours {"basicPianoVisualizeWithColours"};
+    ToggleButton basicPianoVisualizeTransparent {"basicPianoVisualizeTransparent"};
+    Slider basicPianoScreenPortion;
     
+    ToggleButton chordsVisualize {"chordsVisualize"};
     ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
     ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
     ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
     ToggleButton chordsVisualizeGuideline {"chordsVisualizeGuideline"};
+
+    ToggleButton pitchVisualize {"pitchVisualize"};
+    ToggleButton pitchVisualizeGraph {"pitchVisualizeGraph"};
+    ToggleButton pitchVisualizeBubbles {"pitchVisualizeBubbles"};
+    ToggleButton pitchVisualizeKeys {"pitchVisualizeKeys"};
     
+    ToggleButton dropShadows {"dropShadows"};
     ToggleButton keyBoardMode {"keyBoardMode"};
     
     Slider barsPerScreen;

@@ -22,7 +22,8 @@ public:
     //==========================================================================
     void visualizeBackgroundPiano(float visu_lB, float visu_r, Graphics& g, float height, float width);
     void visualizeBasicPiano(float visu_lB, float visu_r, Graphics& g, float height, float width);
-    void visualize(Chord c, float visu_lB, float visu_r, Graphics& g, float height, float width, int layer);
+    void visualizePitch(float visu_lB, float visu_r, Graphics& g, float height, float width, float h);
+    void visualize(Chord c, float visu_lB, float visu_r, Graphics& g, float height, float width, float layer);
     bool isCurrentChord(Chord c);
     //==========================================================================
     

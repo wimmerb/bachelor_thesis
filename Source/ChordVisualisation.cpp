@@ -10,6 +10,7 @@
 
 #include "ChordVisualisation.h"
 #include "ControllerSingleton.h"
+#include "SharedResources.h"
 
 //==============================================================================
 
@@ -49,11 +50,17 @@ void ChordVisualisation::visualizeBackgroundPiano(float visu_lB, float visu_r, G
     }
 }
 void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphics& g, float height, float width){
-
     //Dropshadow
     if(ControllerSingleton::dropShadows){
         DropShadow * bla = new DropShadow(Colour::fromRGBA(0,0,0,250), 8, Point<int>(-4,0));
-        bla -> drawForRectangle(g, *(new Rectangle<int>(width/ControllerSingleton::barsPerScreen, 0, 1, height)));
+        bla -> drawForRectangle(g, *(new Rectangle<int>(width*ControllerSingleton::basicp_ScreenPortion, 0, 1, height)));
+    }
+    else{
+        Path p;
+        p.startNewSubPath(width*ControllerSingleton::basicp_ScreenPortion, 0);
+        p.lineTo(width*ControllerSingleton::basicp_ScreenPortion, height);
+        g.setColour(colourForKeyBorder);
+        g.strokePath(p, PathStrokeType(thicknessForKeyBorder));
     }
 
     int lowestKeyNr = (int)std::floor(fmod(visu_lB, 1.0f)*12.0f);
@@ -71,17 +78,17 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
         float x = 0.0f;
         float y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height)-0.5f*h;
 
-        Colour col = isBlackKey?Colour::fromRGBA(0,0,0,120):Colour::fromRGBA(255,255,255,120);
-
+        Colour col = isBlackKey?Colour::fromRGBA(0,0,0,60):Colour::fromRGBA(255,255,255,100);
+        if(!ControllerSingleton::basicP_visualizeTransparent){
+            col = col = isBlackKey?Colours::black:Colours::white;
+        }
         
 
-        w = 1.0f/ControllerSingleton::barsPerScreen*width;
+        w = ControllerSingleton::basicp_ScreenPortion*width;
         h = height/ControllerSingleton::nrOfVisualizedKeys;
         x = 0.0f;
         y = ((visu_lB+visu_r - (relBase+(float) i /12.0f))/visu_r*height);
         
-
-        col = isBlackKey?Colour::fromRGBA(0,0,0,60):Colour::fromRGBA(255,255,255,100);
         
         Chord::FunctionType funcType = currentlyPlayingNotes[func];
         if(funcType != Chord::FUNC_NAN){
@@ -102,13 +109,45 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
 
             
         }
+        
+        float pitch = (relBase+(float) i /12.0f);
+        bool noteCurrentlyPlayed = std::abs(pitch - SharedResources::trackedPitch) < 1.0f/12.0f/2.0f && ControllerSingleton::pitch_visualizeKeys;
 
         Path p;
+        Path innerPath;
         if(isBlackKey){
-            p.startNewSubPath(x+0.4f*w, y-0.5f*h);
-            p.lineTo(x+w, y-0.5f*h);
-            p.lineTo(x+w, y+0.5f*h);
-            p.lineTo(x+0.4f*w, y+0.5f*h);
+            float startX = x+0.4f*w;
+            float startY =  y-0.5f*h;
+            float endX = x+w -1.0f;
+            float endY = y + 0.5*h;
+            
+            if(noteCurrentlyPlayed){
+                startX += 4.0f;
+                endX -= 4.0f;
+                startY += 4.0f;
+                endY -= 4.0f;
+            }
+            
+            p.startNewSubPath(startX, startY);
+            p.lineTo(endX, startY);
+            p.lineTo(endX, endY);
+            p.lineTo(startX, endY);
+            p.closeSubPath();
+            
+            
+            
+            if(noteCurrentlyPlayed){
+                startX += 5.0f;
+                endX -= 5.0f;
+                
+                startY += 5.0f;
+                endY -= 5.0f;
+                innerPath.startNewSubPath(startX, startY);
+                innerPath.lineTo(endX, startY);
+                innerPath.lineTo(endX, endY);
+                innerPath.lineTo(startX, endY);
+                innerPath.closeSubPath();
+            }
         }
         else{
             float heightOfWhite = h*12.0f/7.0f;
@@ -180,6 +219,15 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
             float leftInnerY = y-narrowToTheLeft*h      +1.0f;
             float rightInnerY = y+narrowToTheRight*h    -1.0f;
             float rightOuterY = y+toTheRight*h          -1.0f;
+            if(noteCurrentlyPlayed){
+                startX += 3.0f;
+                middleX -= 2.0f;
+                leftOuterY += 3.0f;
+                leftInnerY += 3.0f;
+                endX -= 3.0f;
+                rightInnerY -= 3.0f;
+                rightOuterY -= 3.0f;
+            }
             p.startNewSubPath(startX, leftOuterY);
             p.lineTo(middleX, leftOuterY);
             p.lineTo(middleX, leftInnerY);
@@ -188,32 +236,220 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
             p.lineTo(middleX, rightInnerY);
             p.lineTo(middleX, rightOuterY);
             p.lineTo(startX, rightOuterY);
+            p.closeSubPath();
+            
+            if(noteCurrentlyPlayed){
+                startX += 5.0f;
+                middleX -= 5.0f;
+                leftOuterY += 5.0f;
+                leftInnerY += 5.0f;
+                endX -= 5.0f;
+                rightInnerY -= 5.0f;
+                rightOuterY -= 5.0f;
+                innerPath.startNewSubPath(startX, leftOuterY);
+                innerPath.lineTo(middleX, leftOuterY);
+                innerPath.lineTo(middleX, leftInnerY);
+                innerPath.lineTo(endX, leftInnerY);
+                innerPath.lineTo(endX, rightInnerY);
+                innerPath.lineTo(middleX, rightInnerY);
+                innerPath.lineTo(middleX, rightOuterY);
+                innerPath.lineTo(startX, rightOuterY);
+                innerPath.closeSubPath();
+            }
         }
-        p.closeSubPath();
+        
+        
+        
+        
+        
         g.setColour(col);
         g.fillPath(p);
+        if (noteCurrentlyPlayed){
+            col = ControllerSingleton::pointsColor;
+            //col = (funcType != Chord::FUNC_NAN)?colourForKeyBorder:Colours::darkred;
+            g.setColour(col);
+            g.strokePath(p, PathStrokeType(thicknessForKeyBorder*2.0f));
+            //g.fillPath(innerPath);
+        }
         g.setColour(Colours::lightgrey);
-        //g.strokePath(p, PathStrokeType((funcType != Chord::FUNC_NAN)?thicknessForKeyBorder*1.5f:thicknessForKeyBorder));
+        //
 //        g.setColour(col);
 //        g.fillRect(x,y-0.5f*h,w,h);
 //        g.setColour(Colours::lightgrey);
 //        g.drawRect(x,y-0.5f*h,w,h, (funcType != Chord::FUNC_NAN)?thicknessForKeyBorder*1.5f:thicknessForKeyBorder);
+        
     }
+    
+//    g.setColour(Colours::black);
+//    for (int i = lowestKeyNr; i <= highestKeyNr; i++){
+//        int func = (i+9)%12;
+//
+//        float h = height/ControllerSingleton::nrOfVisualizedKeys*2.0f;
+//        float y = ((visu_lB+visu_r - (base+(float) i / 12.0f))/visu_r*height)-0.5f*h;
+//        //float y = ((visu_lB+visu_r - (base+(float) i / (float)nrVisualizedKeys))/visu_r*height)-0.5f*h;
+//        String s = "none";
+//        switch(func){
+//            case 0:
+//                s = "C";
+//                break;
+//            case 2:
+//                s = "D";
+//                break;
+//            case 4:
+//                s = "E";
+//                break;
+//            case 5:
+//                s = "F";
+//                break;
+//            case 7:
+//                s = "G";
+//                break;
+//            case 9:
+//                s = "A";
+//                break;
+//            case 11:
+//                s = "B";
+//                break;
+//        }
+//        if(s != "none"){
+//            g.drawText(s, 0.0f, y, width/ControllerSingleton::barsPerScreen*0.95f, h, Justification::right);
+//        }
+//
+//    }
+    visualizePitch(visu_lB, visu_r, g, height, width, height/ControllerSingleton::nrOfVisualizedKeys);
 }
 
-void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphics& g, float height, float width, int layer){
+void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g, float height, float width, float h){
+    if(ControllerSingleton::pitch_Visualize){
+        if(ControllerSingleton::pitch_visualizeGraph){
+            float timeWindowInBars = ControllerSingleton::barsPerScreen*(ControllerSingleton::basicp_ScreenPortion/(1.0f - ControllerSingleton::basicp_ScreenPortion));
+            
+            float timeWindowInSeconds =
+            timeWindowInBars*ControllerSingleton::bpb/ControllerSingleton::bpm*60.0f;
+            
+            float timeWindowInSamples = timeWindowInSeconds*SharedResources::samplerate;
+            
+            
+            Path p;
+            int samplePeekIntoPast = 0;
+            for(int i = 0; i < SharedResources::pitchHistorySize; i++){
+                std::pair<double, int> tmpDot = SharedResources::pitchHistory[(SharedResources::pitchHistoryIndex-i+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize];
+                
+                samplePeekIntoPast += tmpDot.second;
+                
+                std::cout << "samplePeekIntoPast" << (float)samplePeekIntoPast << "\n";
+                
+                bool isLast = false;
+                
+                if((float)samplePeekIntoPast > timeWindowInSamples){
+                    isLast = true;
+                    std::cout << "isLast!!!" << "\n";
+                }
+                
+                float x = (1.0f-(float)samplePeekIntoPast/timeWindowInSamples)*ControllerSingleton::basicp_ScreenPortion*width;
+                
+                float y = ((visu_lB+visu_r)-tmpDot.first)/visu_r*height;
+                
+                if(i == 0){
+                    p.startNewSubPath(x, y);
+                }
+                else{
+                    p.lineTo(x, y);
+                }
+                
+                std::cout << "x" << x << "y" << y << "\n";
+                
+                if(isLast)
+                    break;
+            }
+            
+            g.setColour(ControllerSingleton::pointsColor);
+            g.strokePath(p, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
+//            p.applyTransform(AffineTransform().translated(0, -1.0f*height));
+//            g.strokePath(p, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
+//            p.applyTransform(AffineTransform().translated(0, 2.0f*height));
+//            g.strokePath(p, PathStrokeType (height/ControllerSingleton::nrOfVisualizedKeys/8.0f*std::sqrt((float)width/(float)height)));
+        }
+        if(ControllerSingleton::pitch_visualizeBubble){
+            float timeWindowInBars = ControllerSingleton::barsPerScreen*(ControllerSingleton::basicp_ScreenPortion/(1.0f - ControllerSingleton::basicp_ScreenPortion));
+            
+            float timeWindowInSeconds =
+            0.5f;
+            
+            float timeWindowInSamples = timeWindowInSeconds*SharedResources::samplerate;
+            float biggestDiameter = 0.6f*h;
+            float smallestDiameter = 2.0f;
+            int nrOfPoints = 20;
+            std::vector<std::pair<Point<float>, float>> vectorOfXYAndDiameter;
+            
+            int j = 0;
+            for(int i = 0; i < nrOfPoints; i++){
+                float respectiveSample = (float)i/(nrOfPoints+1.0f)*timeWindowInSamples;
+                float y = 0.0f;
+                while(true){
+                    std::cout << "INDEX" << (SharedResources::pitchHistoryIndex-j+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize << "\n";
+                    auto tmpDot = SharedResources::pitchHistory[(SharedResources::pitchHistoryIndex-j+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize];
+                    int sampleSize = tmpDot.second;
+                    if (std::abs(j*sampleSize - respectiveSample) < sampleSize/2.0f){
+                        if(std::isnan(tmpDot.first) || std::isinf(tmpDot.first)){
+                            std::cout<< "ISNAN";
+                            break;
+                            
+                        }
+                        std::cout << "jo" << tmpDot.first << "\n";
+                        y = ((visu_lB+visu_r)-tmpDot.first)/visu_r*height;
+                        if(std::isnan(y) || std::isinf(y)){
+                            y = 0.0f;
+                        }
+                        std::cout << "y" << y << "\n" ;
+                        break;
+                    }
+                    j++;
+                }
+                
+                float x = width*ControllerSingleton::basicp_ScreenPortion*(1.0f-1.0f/(nrOfPoints+1)*(i)) - biggestDiameter/2.0f;
+                float diameter = biggestDiameter - ((float)i/(float)nrOfPoints)*(biggestDiameter-smallestDiameter);
+                vectorOfXYAndDiameter.push_back(std::pair<Point<float>, float> (Point<float>(x,y), diameter));
+                
+            }
+            
+            
+            
+            if(ControllerSingleton::dropShadows){
+                Colour dropShadowCol = Colour::fromRGBA(0,0,0,255);
+                for(auto & a : vectorOfXYAndDiameter){
+                    DropShadow * bla = new DropShadow(dropShadowCol, std::max(1.0f, 0.4f*a.second), Point<int>(0,0));
+                    bla -> drawForRectangle(g, *(new Rectangle<int>(a.first.getX()-0.25f*a.second, a.first.getY()-0.1f*a.second, 0.6f*a.second, 0.6f*a.second)));
+                }
+            }
+            g.setColour(ControllerSingleton::pointsColor);
+            for(auto & a : vectorOfXYAndDiameter){
+                g.fillEllipse(a.first.getX()-0.5*a.second, a.first.getY()-0.5*a.second, a.second, a.second);
+            }
+            
+            
+            int samplePeekIntoPast = 0;
+        }
+    }
+    
+    
+
+
+}
+
+void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphics& g, float height, float width, float layer){
     if(isCurrentChord(c)){
         currentlyPlayingNotes = c.functionForNote;
     }
     if(isOnScreen(c)){
         
-        int lowestKeyNr = (int)std::floor(fmod(visu_lB, 1.0f)*12.0f);
+        int lowestKeyNr = (int)std::floor(fmod(visu_lB, 1.0f)*12.0f)-3; //-3 für GuideLines
         float relBase = std::round(visu_lB - (fmod(visu_lB, 1.0f)));
-        int highestKeyNr = (int)std::ceil((visu_lB+visu_r-relBase)*12.0f);
+        int highestKeyNr = (int)std::ceil((visu_lB+visu_r-relBase)*12.0f)+3; //+3 für GuideLines
 
-        float x = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+c.positionX))*width;
+        float x = (((1.0f/ControllerSingleton::barsPerScreen*c.positionX)*(1.0f-ControllerSingleton::basicp_ScreenPortion)) + ControllerSingleton::basicp_ScreenPortion)*width;
         float h = height/ControllerSingleton::nrOfVisualizedKeys;
-        float w = (1.0f/ControllerSingleton::barsPerScreen*c.lengthInBars)*width-10.0f;
+        float w = (1.0f/ControllerSingleton::barsPerScreen*c.lengthInBars)*(1.0f-ControllerSingleton::basicp_ScreenPortion)*width-10.0f;
 //        if(layer == 1){
 //            g.setColour(Colours::turquoise.interpolatedWith(Colour::fromRGBA(0,0,0,0), 0.8f));
 //            g.fillRect(x,0.0f,w,height);
@@ -231,10 +467,10 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     float y2 = y-h2/2.0f;
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
-                    if(layer == 1){
+                    if(layer == 0.0f){
+                        if(ControllerSingleton::chords_Visualize)
                             visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
                                                          y3, w, h3);
-                        
                     }
                     //if(layer == 0)
                         //visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
@@ -249,21 +485,23 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     float y2 = y-h2/2.0f;
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
-                    //if(layer == 1){
-                    //    visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
-                    //}
-                    if(layer == 1){
-                        if(ControllerSingleton::chords_visualizeAsDots)
-                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
-                                                         y3, w, h3);
-                        if(ControllerSingleton::chords_visualizeAsKeys)
-                            visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
-                                               y2, w, h2);
+                    if(layer == 0.0f){
+                        if(ControllerSingleton::chords_visualizeAsDots){
+                            if(ControllerSingleton::chords_Visualize)
+                                visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                                         y3, w, h3);}
+                        if(ControllerSingleton::chords_visualizeAsKeys){
+                            if(ControllerSingleton::chords_Visualize)
+                                visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                               y2, w, h2);}
+                    }
+                    
+                    if(layer == 0.5f){
                         
                         std::vector<std::tuple<int, int, int>> guideLines = c.getGuideLines(func);
                         Chord nextChord = c.acquireNext();
                         if(guideLines.size() > 0){
-                            float w2 = (1.0f/ControllerSingleton::barsPerScreen*nextChord.lengthInBars)*width-10.0f;
+                            float w2 = (1.0f/ControllerSingleton::barsPerScreen*nextChord.lengthInBars)*width*(1.0f-ControllerSingleton::basicp_ScreenPortion)-10.0f;
                             //TODO hier haben wir ein Problem, das funktioniert nicht, wenn barsperscreen kleiner der eigentlichen Bars is...
                             bool isWrapAround = false;
                             float positionXNextChord = nextChord.positionX;
@@ -271,32 +509,33 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                                 positionXNextChord += Chord::totalLengthOfSongInBars;
                                 isWrapAround = true;
                             }
-                            float x2 = (1.0f/ControllerSingleton::barsPerScreen*(1.0f+positionXNextChord))*width;
+                            float x2 = (1.0f/ControllerSingleton::barsPerScreen*(positionXNextChord)*(1.0f-ControllerSingleton::basicp_ScreenPortion) + (ControllerSingleton::basicp_ScreenPortion))*width;
                             if(ControllerSingleton::chords_visualizeGuidelines){
                                 for(int i = 0; i < guideLines.size(); i++){
                                     float y2_2 = y - 1.0f*std::get<1>(guideLines[i])*h;
                                     visualizeGuideLine(x, y, w, x2, y2_2, w2, h3, height, g);
-                                    if(isWrapAround)
-                                        visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
-                                                           y,
-                                                           w,
-                                                           x2-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*width,
-                                                           y2_2,
-                                                           w2,
-                                                           h3,
-                                                           height,
-                                                           g);
+//                                    if(isWrapAround){std::cout << "wraparound";}
+//                                    visualizeGuideLine(x-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*(1.0f-ControllerSingleton::basicp_ScreenPortion)*width,
+//                                                                                               y,
+//                                                                                               w,
+//                                                                                               x2-(1.0f/ControllerSingleton::barsPerScreen*(Chord::totalLengthOfSongInBars))*(1.0f-ControllerSingleton::basicp_ScreenPortion)*width,
+//                                                                                               y2_2,
+//                                                                                               w2,
+//                                                                                               h3,
+//                                                                                               height,
+//                                                                                               g);
                                 }
                             }
                         }
                     }
                     
                     
-                    
-                    
-                    if(layer == 0){
-                        if(ControllerSingleton::chords_visualizeAsDots)
-                            visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                    if(layer == 1.0f){
+                        if(ControllerSingleton::chords_visualizeAsDots){
+                            if(ControllerSingleton::chords_Visualize)
+                                visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
+                            
+                        }
                     }
 
                 }
@@ -371,13 +610,15 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
 
 
 void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float relBase, int i, Graphics& g, float height, float width, float x, float y, float w, float h){
-
+    
+    
 
     int isBlackKey = isBlack(func);
 
     Colour col;
     Colour col2 = colourForKeyBorder;
     Colour col3 = Colours::black;
+    Colour dropShadowCol = Colour::fromRGBA(0,0,0,255);
     //get Colour
     if(isBlackKey){
         col = !(ControllerSingleton::chords_visualizeWithColours)?functionTypeToColourBlackScheme.at(Chord::FUNC_REGULAR):functionTypeToColourBlackScheme.at(functionType);
@@ -387,7 +628,7 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
     }
     
     if(isCurrentChord(c)){
-        x = std::max(x, (1.0f / ControllerSingleton::barsPerScreen * (1.0f) * width));
+        x = std::max(x, (ControllerSingleton::basicp_ScreenPortion * (1.0f) * width));
 
         float mix = 0.0f;
         float chordPositionRightNow = (0-c.positionX)/c.lengthInBars;
@@ -397,6 +638,13 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
         col = col.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
         col2 = col2.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
         col3 = col3.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
+        dropShadowCol = dropShadowCol.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
+        
+    }
+    
+    if(ControllerSingleton::dropShadows){
+        DropShadow * bla = new DropShadow(dropShadowCol, 0.3*h, Point<int>(0,0));
+        bla -> drawForRectangle(g, *(new Rectangle<int>(x-0.25f*h, y+0.25f*h, 0.6f*h, 0.6f*h)));
     }
     
     g.setColour(col);
@@ -408,8 +656,8 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
     g.setColour(col3);
     if(functionType != Chord::FUNC_REGULAR){}
         g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
-
-
+    
+    
 
 
 }
@@ -420,7 +668,7 @@ void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionTy
     //bool isBlackKey = isBlack(func);
     
     Colour col = Colours::white.interpolatedWith(Colour::fromRGBA(0,0,0,0), isCurrentChord(c)?0.4f:0.75f);
-    float x2 = std::max(x, (1.0f/ControllerSingleton::barsPerScreen*(1.0f)*width));
+    float x2 = std::max(x, (ControllerSingleton::basicp_ScreenPortion*(1.0f)*width));
     if(ControllerSingleton::chords_fadeOutHorizontal && isCurrentChord(c)){
         g.setGradientFill(*(new ColourGradient(col, x, 0, Colour::fromRGBA(255,255,255,40), x+w, 0, false)));
     }
@@ -454,8 +702,8 @@ Chord::FunctionType ChordVisualisation::getFunctionTypeUnderVisuConstraints(Chor
     return functionType;
 }
 
-bool ChordVisualisation::isOnScreen(Chord c){
-    if(c.positionX > ControllerSingleton::barsPerScreen - 1)
+bool ChordVisualisation::isOnScreen(Chord c){//TODO Einberechnen der Buttongröße für Dotvisualisation
+    if(c.positionX > ControllerSingleton::barsPerScreen)
         return false;
     if(c.positionX+c.lengthInBars+0.5f < 0.0f)
         return false;

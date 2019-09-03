@@ -20,14 +20,14 @@ public:
     //==============================================================================
     Application() {}
 
-    const String getApplicationName() override       { return "PitchTrackAndOpenGL"; }
+    const String getApplicationName() override       { return "bachelor_thesis"; }
     const String getApplicationVersion() override    { return "1.0.0"; }
 
     double * tracked = new double;
 
     void initialise (const String&) override         {
 
-                                                                mainWindow.reset (new MainWindow ("PitchTrackAndOpenGL", new MainComponent(), *this));
+                                                                mainWindow.reset (new MainWindow ("bachelor_thesis", new MainComponent(), *this));
                                                         }
     void shutdown() override                         { mainWindow = nullptr; }
 

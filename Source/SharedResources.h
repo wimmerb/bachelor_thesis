@@ -14,14 +14,15 @@
 
 class SharedResources{
 public:
+    static void init();
     static int samplerate;
     
     //latest tracked pitch
     static double trackedPitch;
     
     //FiFo for tracked pitches as tuple (pitch, sampleCountinSong)
-    static std::pair<double, int> * pitchHistory;
-    static int pitchHistorySize;
+    static std::vector<std::pair<double, int>>  pitchHistory;
+    static const int pitchHistorySize;
     static int pitchHistoryIndex;
     
     //Delta in Samples

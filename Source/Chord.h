@@ -96,8 +96,6 @@ private:
     void initGuidelines();
 
     
-    
-    
     static std::vector<Chord> * chordVector;
     
     float beginsAtSampleCount = 0.0f;

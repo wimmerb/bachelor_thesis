@@ -18,7 +18,7 @@ ControllerSingleton::~ControllerSingleton(){}
 
 void ControllerSingleton::init(std::vector<bool> bla, bool basicp__visualizeWholeScale, bool basicP__visualizeWithColours, bool chords__visualizeWithColours){
     backgroundColor = Colours::darkgrey.interpolatedWith(Colours::darkblue, 0.5f);
-    pointsColor = Colours::turquoise;
+    pointsColor = Colour::fromRGB(14, 215, 230).interpolatedWith(Colours::grey, 0.4);
 
     for(int i = 0; i < 9; i++){
         chords_visuArray[i] = bla[i];
@@ -53,6 +53,7 @@ bool ControllerSingleton::snapPitchToGrid = true;
 
 //ChordVisualisation
 bool * ControllerSingleton::chords_visuArray = new bool [9]{true,true,true,true,false,false,false,true,false};
+bool ControllerSingleton::chords_Visualize = true;
 bool ControllerSingleton::chords_visualizeAsDots = true;
 bool ControllerSingleton::chords_visualizeAsKeys = false;
 bool ControllerSingleton::chords_visualizeWithColours = true;
@@ -63,6 +64,14 @@ bool ControllerSingleton::chords_visualizeGuidelines = true;
 bool ControllerSingleton::basicp_highlightBasicPiano = true;
 bool ControllerSingleton::basicp_visualizeWholeScale = true;
 bool ControllerSingleton::basicP_visualizeWithColours = true;
+bool ControllerSingleton::basicP_visualizeTransparent = true;
+float ControllerSingleton::basicp_ScreenPortion = 0.4f;
+
+//PitchVisualisation
+bool ControllerSingleton::pitch_Visualize = true;
+bool ControllerSingleton::pitch_visualizeGraph = false;
+bool ControllerSingleton::pitch_visualizeBubble = false;
+bool ControllerSingleton::pitch_visualizeKeys = true;
 //==========================================================================
 //BASICCONTROL
 bool ControllerSingleton::isPlaying = false;
