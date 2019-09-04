@@ -39,6 +39,9 @@ int ControllerSingleton::bpb = 4;
 int ControllerSingleton::bpm = 90;
 float ControllerSingleton::timePerBarMs = 60000.0f/((float)bpm)*(float)bpb;
 
+std::vector<Chord> * ControllerSingleton::chordVector = nullptr;
+String ControllerSingleton::songAudioFileName;
+
 int ControllerSingleton::nrOfVisualizedKeys = 24;
 int ControllerSingleton::nrPoints = 30;
 Colour ControllerSingleton::backgroundColor = Colours::darkgrey.interpolatedWith(Colours::darkblue, 0.2f);

@@ -655,7 +655,34 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
     g.setFont(h/3.0f);
     g.setColour(col3);
     if(functionType != Chord::FUNC_REGULAR){}
-        g.drawText(keyName_get(func, c, functionType), x-0.5*h ,y,h,h, Justification::centred, true);
+    
+    String s = keyName_get(func, c, functionType);
+    if(s.contains("maj")){
+        int i = s.indexOf("maj");
+        String a = s.substring(0, i);
+        String b = s.substring(i+3, s.length());
+        
+        g.drawText(a, x-0.5*h ,y,0.5*h,h, Justification::centred, true);
+        g.drawText(b, x ,y,0.5*h,h, Justification::centred, true);
+        const unsigned char pathData[] = { 110,109,180,200,179,67,125,159,163,67,108,209,130,63,67,68,139,174,65,98,98,80,61,67,154,153,142,65,178,29,57,67,7,129,117,65,27,143,52,67,7,129,117,65,98,66,0,48,67,7,129,117,65,21,206,43,67,154,153,142,65,101,155,41,67,68,139,174,65,108,162,69,198,
+            63,125,159,163,67,98,244,253,20,191,27,143,165,67,212,77,2,191,252,233,167,67,82,184,222,63,39,209,169,67,98,199,75,127,64,49,184,171,67,174,71,1,65,242,226,172,67,0,0,72,65,242,226,172,67,108,250,78,174,67,242,226,172,67,98,221,132,176,67,242,226,172,
+            67,131,144,178,67,49,184,171,67,98,176,179,67,39,209,169,67,98,66,208,180,67,252,233,167,67,121,217,180,67,27,143,165,67,180,200,179,67,125,159,163,67,99,109,129,149,6,66,209,98,160,67,108,27,143,52,67,141,23,87,66,108,106,188,163,67,209,98,160,67,108,
+            129,149,6,66,209,98,160,67,99,101,0,0 };
+        
+        Path path;
+        path.loadPathFromData (pathData, sizeof (pathData));
+        AffineTransform transform = path.getTransformToScaleToFit(x-0.1*h, y, 0.2*h, h, true);
+        path.applyTransform(transform);
+        g.fillPath(path);
+        
+    }
+    else if (s.contains("m")){
+        s = s.replace("m", "-");
+        g.drawText(s, x-0.5*h ,y,h,h, Justification::centred, true);
+    }
+    else{
+        g.drawText(s, x-0.5*h ,y,h,h, Justification::centred, true);
+    }
     
     
 

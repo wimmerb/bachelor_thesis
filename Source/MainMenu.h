@@ -30,7 +30,8 @@ public:
 private:
     //==============================================================================
     // Your private member variables go here...
-    File f {"/Users/expert239/Desktop/BA_Material/SelectorMenu/SongFolders"};
+    //File f {"/Users/expert239/Desktop/bachelor_thesis/SongFolders"};
+    File f;
     ComboBox songBox;
     TextButton play {"Play"}, modify {"modify Song"};
     String mainMessage {"Choose a Song"};

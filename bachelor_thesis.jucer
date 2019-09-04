@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="Bt6tNr" name="bachelor_thesis" projectType="guiapp" jucerVersion="5.4.3">
+<JUCERPROJECT id="Bt6tNr" name="bachelor_thesis" projectType="guiapp" jucerVersion="5.4.3"
+              maxBinaryFileSize="20971520">
   <MAINGROUP id="R66v5n" name="bachelor_thesis">
+    <GROUP id="{228C2AC8-9CFF-4545-F7A1-C4D1B0F09AB3}" name="bin">
+      <FILE id="eynqAO" name="VISU_wallpaperbro.jpeg" compile="0" resource="1"
+            file="../VISU_wallpaperbro.jpeg"/>
+      <FILE id="q9xZev" name="SONGS_1625_ba_hacky.json" compile="0" resource="1"
+            file="SongFolders/1625/SONGS_1625_ba_hacky.json"/>
+      <FILE id="CT7ZA8" name="AUDIO_Stick_Count.wav" compile="0" resource="1"
+            file="../AUDIO_Stick_Count.wav"/>
+      <FILE id="APPeg8" name="SONGS_1625_ba_hacky.wav" compile="0" resource="1"
+            file="SongFolders/1625/SONGS_1625_ba_hacky.wav"/>
+    </GROUP>
     <GROUP id="{D472E6FD-5822-732D-AEF1-78C2A98AA98C}" name="Source">
       <FILE id="htQmay" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
       <FILE id="xJlBZV" name="MainMenu.cpp" compile="1" resource="0" file="Source/MainMenu.cpp"/>
       <FILE id="TKeKkI" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="sq0ahK" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
-      <GROUP id="{2FF857C0-0091-6A48-9DFE-B715AFFA4AD2}" name="New Group">
-        <FILE id="WhoRga" name="BA_hacky_1625.wav" compile="0" resource="1"
-              file="../BA_hacky_1625.wav"/>
-      </GROUP>
+      <GROUP id="{2FF857C0-0091-6A48-9DFE-B715AFFA4AD2}" name="New Group"/>
       <GROUP id="{72409CF6-86F0-7376-7CBD-ADC41CE25CA7}" name="AudioClasses">
         <FILE id="wicRmj" name="dywapitchtrack.cpp" compile="1" resource="0"
               file="Source/dywapitchtrack.cpp"/>

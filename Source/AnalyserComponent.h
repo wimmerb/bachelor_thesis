@@ -51,6 +51,7 @@
 #include <iostream>
 #include <unistd.h>
 #include "SharedResources.h"
+#include "ControllerSingleton.h"
 
 //==============================================================================
 class AnalyserComponent   : public AudioAppComponent,
@@ -87,9 +88,24 @@ public:
         shutdownAudio();
         //handleOutputs
         formatManager.registerBasicFormats();
-        
-        File x ("/Users/expert239/Desktop/BA_hacky_1625.wav");
-        std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (x));
+        std::unique_ptr<AudioFormatReader> reader;
+        if(ControllerSingleton::songAudioFileName.isEmpty()){
+            
+            std::cout << "empty";
+            std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::SONGS_1625_ba_hacky_wav, BinaryData::SONGS_1625_ba_hacky_wavSize, false));
+            reader.reset(formatManager.createReaderFor (memoryInput.release()));
+            
+        }
+        else{
+            String s = "";
+            s.append(ControllerSingleton::songAudioFileName, 200);
+            s.append("_wav", 10);
+            int size;
+            std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::getNamedResource(s.getCharPointer(), size), (size_t) size, false));
+            reader.reset(formatManager.createReaderFor (memoryInput.release()));
+            
+        }
+        //std::unique_ptr<AudioFormatReader> reader (formatManager.createReaderFor (x));
         
         if (reader.get() != nullptr)
         {
@@ -105,9 +121,8 @@ public:
             SharedResources::sampleCountOfSong = fileToPlay.getNumSamples();
         }
         
-        
-        File counter ("/Users/expert239/Desktop/Stick_Count.wav");
-        std::unique_ptr<AudioFormatReader> counterReader(formatManager.createReaderFor (counter));
+        std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::AUDIO_Stick_Count_wav, (size_t) BinaryData::AUDIO_Stick_Count_wavSize, false));
+        std::unique_ptr<AudioFormatReader> counterReader(formatManager.createReaderFor (memoryInput.release()));
         int lenghtInSamplesForCountIn = std::round((float)ControllerSingleton::bpb/(float)ControllerSingleton::bpm*60.0f*(float)SharedResources::samplerate);
         if (counterReader.get() != nullptr)
         {

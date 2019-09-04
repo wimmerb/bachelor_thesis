@@ -3,7 +3,7 @@
     "bpm" : 90,
     "bpb" : 4,
     "chords":[  {   "base" :            "F",
-                    "chordtype" :       "▲7",
+                    "chordtype" :       "maj7",
                     "scale" :           "Major",
                     "length_in_bars" :  1.0
                 },

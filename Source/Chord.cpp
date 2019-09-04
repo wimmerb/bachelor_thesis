@@ -18,7 +18,7 @@
 //==============================================================================
 
 
-Chord::Chord(std::string base, std::string chordType, std::string scale, float lengthInBars){
+Chord::Chord(String base, String chordType, String scale, float lengthInBars){
     this->baseName = base;
     this->chordName = chordType;
     this->scaleName = scale;
@@ -70,7 +70,7 @@ String Chord::toString(){
 }
 
 //==============================================================================
-void Chord::initFunctionForNote(std::string scaleName, std::string chordName){
+void Chord::initFunctionForNote(String scaleName, String chordName){
 
     for(int i = 0; i < 12; i++){
         functionForNote[(i+base)%12] = scaleNameToFunctions.at(scaleName)[i];

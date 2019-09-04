@@ -60,11 +60,16 @@ VisuMaster::VisuMaster(){
     
     points = new Points(ControllerSingleton::nrPoints, (float) getHeight(), (float) getWidth()/ControllerSingleton::barsPerScreen, 15.0f, 1.0f);
 
-    chordVector = new std::vector<Chord>();
-    chordVector->push_back(Chord("F", "▲7", "Major", 1.0f));
-    chordVector->push_back(Chord("D", "7b9", "HM5", 1.0f));
-    chordVector->push_back(Chord("G", "m7", "Dorian", 1.0f));
-    chordVector->push_back(Chord("C", "7", "Mixolydian", 1.0f));
+    if(ControllerSingleton::chordVector == nullptr){
+        chordVector = new std::vector<Chord>();
+        chordVector->push_back(Chord("F", "maj7", "Major", 1.0f));
+        chordVector->push_back(Chord("D", "7b9", "HM5", 1.0f));
+        chordVector->push_back(Chord("G", "m7", "Dorian", 1.0f));
+        chordVector->push_back(Chord("C", "7", "Mixolydian", 1.0f));
+    }
+    else{
+        chordVector = ControllerSingleton::chordVector;
+    }
     Chord::initFromChordVector(chordVector);
     chordVisualizer = new ChordVisualisation();
     
@@ -73,9 +78,11 @@ VisuMaster::VisuMaster(){
 
     setEnterTime();
     
-    File f = File("/Users/expert239/Desktop/wallpaperbro.jpeg");
+    //File f = File("/Users/expert239/Desktop/wallpaperbro.jpeg");
     
-    backgroundImage = ImageFileFormat::loadFrom(f);
+    backgroundImage = ImageFileFormat::loadFrom(BinaryData::VISU_wallpaperbro_jpeg, (size_t) BinaryData::VISU_wallpaperbro_jpegSize);
+    
+    //backgroundImage = ImageFileFormat::loadFrom(f);
     
     
     
@@ -180,18 +187,20 @@ void VisuMaster::ppaint (Graphics& g){
         Chord wrapAroundChord = (*(chordVector))[indexOfLastChord];
         wrapAroundChord.positionX -= Chord::totalLengthOfSongInBars;
         
-        {   //Keys
-            for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
-                chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 0.0f);
-            }
-        }
-        
         {   //Guidelines
             for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
                 chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 0.5f);
             }
             chordVisualizer->visualize(wrapAroundChord, visu_lowerBound, visu_range, g, (float)height, (float)width, 0.5f);
         }
+        
+        {   //Keys
+            for(int i = indexOfLastChord; i < indexOfLastChord+chordVector->size(); i++){
+                chordVisualizer->visualize((*(chordVector))[i%chordVector->size()], visu_lowerBound, visu_range, g, (float)height, (float)width, 0.0f);
+            }
+        }
+        
+        
         
         
         g.setColour(Colours::black);//TODO WTF

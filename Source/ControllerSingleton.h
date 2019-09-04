@@ -10,6 +10,7 @@
 
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Chord.h"
 
 class ControllerSingleton
 {
@@ -28,6 +29,9 @@ public:
     //beatsperminute
     static int bpm;
     static float timePerBarMs;
+    
+    static std::vector<Chord> * chordVector;
+    static String songAudioFileName;
     
     static int nrOfVisualizedKeys;
     static int nrPoints;
