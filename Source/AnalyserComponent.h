@@ -180,6 +180,7 @@ public:
         SharedResources::samplesPositionOfSong = positionToPlay+bufferToFill.numSamples;
 //
         //HandleInput
+        {
         if (bufferToFill.buffer->getNumChannels() > 0)
         {
             auto* channelData = bufferToFill.buffer->getReadPointer (0, bufferToFill.startSample);
@@ -203,12 +204,12 @@ public:
             }
 
         }
+        }
 
 //        if(!isActivated)
 //            return;
         //HandleOutput
-        
-
+        {
         auto numInputChannels = fileToPlay.getNumChannels();
         auto numOutputChannels = bufferToFill.buffer->getNumChannels();
 
@@ -288,7 +289,7 @@ public:
             
         }
         //If some other command needs to be placed here: watch out for the return if not isPlaying
-        
+        }
         
         
     }
@@ -319,13 +320,32 @@ public:
                 }
             }
             
-            
+            float lowerWrapAroundBound = 1.0f+1.0f/12.0f*3.0f;
+            float upperWrapAroundBound = 1.0f+1.0f/12.0f*3.0f+1.0f/12.0f*ControllerSingleton::nrOfVisualizedKeys;
+            if(SharedResources::trackedPitch > upperWrapAroundBound){
+                std::cout << "higher";
+                float discrepancy = SharedResources::trackedPitch - upperWrapAroundBound;
+                discrepancy = std::ceil(discrepancy);
+                discrepancy = 0.5f*discrepancy;
+                discrepancy = std::ceil(discrepancy);
+                discrepancy = 2.0f*discrepancy;
+                SharedResources::trackedPitch = SharedResources::trackedPitch - discrepancy;
+            }
+            if(SharedResources::trackedPitch < lowerWrapAroundBound){
+                std::cout << "lower";
+                float discrepancy = lowerWrapAroundBound - SharedResources::trackedPitch;
+                discrepancy = std::ceil(discrepancy);
+                discrepancy = 0.5f*discrepancy;
+                discrepancy = std::ceil(discrepancy);
+                discrepancy = 2.0f*discrepancy;
+                SharedResources::trackedPitch = SharedResources::trackedPitch + discrepancy;
+            }
             
             //tested if seen by others -> CHECK
-            SharedResources::trackedPitch = 2.0+0.15*std::sin(positionToPlay*0.0001);
-            if(std::abs(SharedResources::trackedPitch) > 1000.0f){
-                std::cout<< "GAVEHIMNAN";
-            }
+//            SharedResources::trackedPitch = 2.0+0.15*std::sin(positionToPlay*0.0001);
+//            if(std::abs(SharedResources::trackedPitch) > 1000.0f){
+//                std::cout<< "GAVEHIMNAN";
+//            }
             SharedResources::pitchHistory[SharedResources::pitchHistoryIndex = (SharedResources::pitchHistoryIndex+1)%SharedResources::pitchHistorySize]
             = std::pair<double, int>(SharedResources::trackedPitch, fftSize);
 
