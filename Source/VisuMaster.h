@@ -52,7 +52,6 @@ private:
     float visu_range;
 
     std::vector<Chord> * chordVector;
-    Points * points;
     
     ChordVisualisation * chordVisualizer;
     
@@ -67,8 +66,8 @@ private:
     void reAdjustWindow(float p, float timeSinceLastFrameMs);
     float currScreenSpeed = 0.0f;
     int maxScreenSpeed = 40;
-    float virtScreenBorder = 0.3f;
-    float screenAcceleration = 1.0f;
+    float virtScreenBorder = 0.2f;
+    float screenAcceleration = 0.55f;
     
     void renderOpenGL() override;
     OpenGLContext openGLContext;

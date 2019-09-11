@@ -43,6 +43,7 @@ private:
                                                                               Chord::FUNC_NAN, Chord::FUNC_NAN, Chord::FUNC_NAN, Chord::FUNC_NAN};
 
 
+    double pitchWrapAround(float visu_lB, float visu_r, double pitch);
     //KeyNameModule //TODO Tripel machen?
     const std::pair<const String, const String> keyName_NamePairFromAbsoluteFunc [12] = {{"C","C"},
                                                                      {"C#","Db"},

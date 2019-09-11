@@ -106,12 +106,16 @@ void ChordVisualisation::visualizeBasicPiano(float visu_lB, float visu_r, Graphi
                             }
                         }
                     }
-
-            
         }
         
+        double trackedPitch = SharedResources::trackedPitch;
+        if(ControllerSingleton::pitch_wrapAround){
+            trackedPitch = pitchWrapAround(visu_lB, visu_r, trackedPitch);
+        }
+        //todo umformen
+        
         float pitch = (relBase+(float) i /12.0f);
-        bool noteCurrentlyPlayed = std::abs(pitch - SharedResources::trackedPitch) < 1.0f/12.0f/2.0f && ControllerSingleton::pitch_visualizeKeys;
+        bool noteCurrentlyPlayed = std::abs(pitch - trackedPitch) < 1.0f/12.0f/2.0f && ControllerSingleton::pitch_visualizeKeys && ControllerSingleton::pitch_Visualize;
 
         Path p;
         Path innerPath;
@@ -348,7 +352,12 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                 
                 float x = (1.0f-(float)samplePeekIntoPast/timeWindowInSamples)*ControllerSingleton::basicp_ScreenPortion*width;
                 
-                float y = ((visu_lB+visu_r)-tmpDot.first)/visu_r*height;
+                double trackedPitch = tmpDot.first;
+                if(ControllerSingleton::pitch_wrapAround){
+                    trackedPitch = pitchWrapAround(visu_lB, visu_r, trackedPitch);
+                }
+                
+                float y = ((visu_lB+visu_r)-trackedPitch)/visu_r*height;
                 
                 if(i == 0){
                     p.startNewSubPath(x, y);
@@ -374,7 +383,7 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
             float timeWindowInBars = ControllerSingleton::barsPerScreen*(ControllerSingleton::basicp_ScreenPortion/(1.0f - ControllerSingleton::basicp_ScreenPortion));
             
             float timeWindowInSeconds =
-            0.5f;
+            0.3f;
             
             float timeWindowInSamples = timeWindowInSeconds*SharedResources::samplerate;
             float biggestDiameter = 0.6f*h;
@@ -397,7 +406,12 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                             
                         }
                         std::cout << "jo" << tmpDot.first << "\n";
-                        y = ((visu_lB+visu_r)-tmpDot.first)/visu_r*height;
+                        double trackedPitch = tmpDot.first;
+                        if(ControllerSingleton::pitch_wrapAround){
+                            trackedPitch = pitchWrapAround(visu_lB, visu_r, trackedPitch);
+                        }
+                        
+                        y = ((visu_lB+visu_r)-trackedPitch)/visu_r*height;
                         if(std::isnan(y) || std::isinf(y)){
                             y = 0.0f;
                         }
@@ -468,9 +482,13 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
                     if(layer == 0.0f){
-                        if(ControllerSingleton::chords_Visualize)
-                            visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
-                                                         y3, w, h3);
+                        if(ControllerSingleton::chords_Visualize){
+                            if(ControllerSingleton::basicp_visualizeWholeScale){
+                                visualizeNoteAsDotBackground(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
+                                                             y3, w, h3);
+                            }
+                            
+                        }
                     }
                     //if(layer == 0)
                         //visualizeNoteAsDot(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x, y2, w, h2);
@@ -482,6 +500,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                     if(functionType == Chord::FUNC_1){
                         h2 = 1.0f*h;
                     }
+                    
                     float y2 = y-h2/2.0f;
                     float h3 = h/5.0f;
                     float y3 = y-h3/2.0f;
@@ -493,7 +512,7 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
                         if(ControllerSingleton::chords_visualizeAsKeys){
                             if(ControllerSingleton::chords_Visualize)
                                 visualizeNoteAsKey(c, functionType, func, visu_lB, visu_r, relBase, i , g, height, width, x,
-                                               y2, w, h2);}
+                                               y2+0.1f*h2, w, 0.8f*h2);}
                     }
                     
                     if(layer == 0.5f){
@@ -543,15 +562,15 @@ void ChordVisualisation::visualize(Chord c, float visu_lB, float visu_r, Graphic
 
 
         }
-        if(isCurrentChord(c)){
+        if(isCurrentChord(c) && layer == 0.5f){
             float chordPositionRightNow = (0-c.positionX)/c.lengthInBars;
 
             float timeSinceArrivalMs = 60000.0f*(chordPositionRightNow*c.lengthInBars*ControllerSingleton::bpb/ControllerSingleton::bpm);
             float mix = 0.0f;
-            if(timeSinceArrivalMs < 350.0f){
-                mix = 1.0f-timeSinceArrivalMs/350.0f;
+            if(timeSinceArrivalMs < 400.0f){
+                mix = 1.0f-timeSinceArrivalMs/400.0f;
             }
-            mix *= 0.2f;
+            mix *= 0.1f;
             g.setColour(Colours::white.interpolatedWith(Colour::fromRGBA(0.0f,0.0f,0.0f, 0.0f), 1.0f-mix));
             g.fillAll();
         }
@@ -601,7 +620,7 @@ void ChordVisualisation::visualizeNoteAsKey(Chord c, Chord::FunctionType functio
     }
     g.drawRoundedRectangle(x,y,w,h,2.0f, thicknessForKeyBorder);
 
-    g.setFont(h/3.0f);
+    g.setFont(h/3.0f/0.6f);
     g.setColour(Colours::black);
     if(functionType != Chord::FUNC_REGULAR)
         g.drawText(keyName_get(func, c, functionType), x ,y, w,h, Justification::centred, true);
@@ -641,6 +660,10 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
         dropShadowCol = dropShadowCol.interpolatedWith(Colour::fromRGBA(0,0,0,0), mix);
         
     }
+    else{
+        if(ControllerSingleton::chords_visualizeAsKeys)
+            return;
+    }
     
     if(ControllerSingleton::dropShadows){
         DropShadow * bla = new DropShadow(dropShadowCol, 0.3*h, Point<int>(0,0));
@@ -652,7 +675,7 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
     g.setColour(col2);
     g.drawEllipse(x-0.5*h,y,h,h,thicknessForKeyBorder);
 
-    g.setFont(h/3.0f);
+    g.setFont(h/2.5f);
     g.setColour(col3);
     if(functionType != Chord::FUNC_REGULAR){}
     
@@ -763,4 +786,42 @@ bool ChordVisualisation::isBlack(int func){
         return true;
     }
     else return false;
+}
+
+
+double ChordVisualisation::pitchWrapAround(float visu_lB, float visu_r, double pitch){
+        float lowerWrapAroundBound = visu_lB;
+        float upperWrapAroundBound = visu_lB+visu_r;
+        if(pitch > upperWrapAroundBound){
+            std::cout << "===============\n";
+            std::cout << "higher\n";
+            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
+            std::cout << "upperBound " << upperWrapAroundBound << "\n";
+            std::cout << "pitch" << pitch << "\n";
+            float discrepancy = pitch - upperWrapAroundBound;
+            discrepancy = std::ceil(discrepancy);
+            discrepancy = 0.5f*discrepancy;
+            discrepancy = std::ceil(discrepancy);
+            discrepancy = 2.0f*discrepancy;
+            pitch = pitch - discrepancy;
+            std::cout << "newpitch" << pitch << "\n";
+            std::cout << "===============\n";
+        }
+        else if(SharedResources::trackedPitch < lowerWrapAroundBound){
+            std::cout << "===============\n";
+            std::cout << "lower\n";
+            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
+            std::cout << "upperBound " << upperWrapAroundBound << "\n";
+            std::cout << "pitch" << pitch << "\n";
+            float discrepancy = lowerWrapAroundBound - pitch;
+            discrepancy = std::ceil(discrepancy);
+            discrepancy = 0.5f*discrepancy;
+            discrepancy = std::ceil(discrepancy);
+            discrepancy = 2.0f*discrepancy;
+            pitch = pitch + discrepancy;
+            std::cout << "newpitch" << pitch << "\n";
+            std::cout << "===============\n";
+        }
+    
+    return pitch;
 }

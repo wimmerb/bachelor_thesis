@@ -58,8 +58,7 @@ class AnalyserComponent   : public AudioAppComponent,
                             private AsyncUpdater
 {
 public:
-    AnalyserComponent()
-        :                                                         audioSetupComp (deviceManager,
+    AnalyserComponent() : pitchMPM(fftSize),    audioSetupComp (deviceManager,
                                                                                  0,     // minimum input channels
                                                                                  256,   // maximum input channels
                                                                                  0,     // minimum output channels
@@ -82,6 +81,8 @@ public:
         SharedResources::samplerate = deviceManager.getCurrentAudioDevice()->getCurrentSampleRate();
         samplerateComp = deviceManager.getCurrentAudioDevice()->getCurrentSampleRate()/44100;
 
+        SharedResources::pitchHistorySize = fftSize;
+        
         //handleInputs
         dywapitch_inittracking(tracker);
         
@@ -137,6 +138,12 @@ public:
             SharedResources::countIn = true;
         }
         //isActivated = true;
+        
+        
+        
+        //MPM
+        pitchMPM.setSampleRate (SharedResources::samplerate);
+        //pitchMPM.setBufferSize (fftSize);
     }
 
     ~AnalyserComponent()
@@ -306,6 +313,7 @@ public:
             //OriginalPitchtrack
             
             double rms = 0.0;
+            rms = 1.0;
             for(int i = 0; i < fftSize; i++){
                 rms += std::abs(ptData[i]);
             }
@@ -314,32 +322,20 @@ public:
             rms = rms/(double)fftSize;
             //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%lf", rms);
             if(rms>0.004){
-                double x = samplerateComp*dywapitch_computepitch(tracker, ptData, 0, fftSize);
+                double x = 1.0;
+                
+                if(ControllerSingleton::pitchTrack_useMPM)
+                    x = (double)pitchMPM.getPitch(fftData);
+                if(ControllerSingleton::pitchTrack_useDywa)
+                    x = samplerateComp*dywapitch_computepitch(tracker, ptData, 0, fftSize);
+                
+                
                 if (x > 0.0){
                     SharedResources::trackedPitch = log2(x/55.0);
                 }
             }
             
-            float lowerWrapAroundBound = 1.0f+1.0f/12.0f*3.0f;
-            float upperWrapAroundBound = 1.0f+1.0f/12.0f*3.0f+1.0f/12.0f*ControllerSingleton::nrOfVisualizedKeys;
-            if(SharedResources::trackedPitch > upperWrapAroundBound){
-                std::cout << "higher";
-                float discrepancy = SharedResources::trackedPitch - upperWrapAroundBound;
-                discrepancy = std::ceil(discrepancy);
-                discrepancy = 0.5f*discrepancy;
-                discrepancy = std::ceil(discrepancy);
-                discrepancy = 2.0f*discrepancy;
-                SharedResources::trackedPitch = SharedResources::trackedPitch - discrepancy;
-            }
-            if(SharedResources::trackedPitch < lowerWrapAroundBound){
-                std::cout << "lower";
-                float discrepancy = lowerWrapAroundBound - SharedResources::trackedPitch;
-                discrepancy = std::ceil(discrepancy);
-                discrepancy = 0.5f*discrepancy;
-                discrepancy = std::ceil(discrepancy);
-                discrepancy = 2.0f*discrepancy;
-                SharedResources::trackedPitch = SharedResources::trackedPitch + discrepancy;
-            }
+            
             
             //tested if seen by others -> CHECK
 //            SharedResources::trackedPitch = 2.0+0.15*std::sin(positionToPlay*0.0001);
@@ -377,15 +373,8 @@ public:
                 }
 
 
-
-
-
-
-
-
                 nextFFTBlockReady = true;
-
-                //triggerAsyncUpdate ();
+                //pitchMPM.getPitch(fftData);
                 handleAsyncUpdate();
 
 
@@ -416,6 +405,9 @@ private:
     //stub
     int i = 0;
 
+    //MPM
+    adamski::PitchMPM pitchMPM;
+    
     //analyserAttributes
     float fifo [fftSize];
     float fftData [fftSize];

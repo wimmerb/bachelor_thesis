@@ -62,6 +62,7 @@ bool ControllerSingleton::chords_visualizeAsKeys = false;
 bool ControllerSingleton::chords_visualizeWithColours = true;
 bool ControllerSingleton::chords_fadeOutHorizontal = false;
 bool ControllerSingleton::chords_visualizeGuidelines = true;
+bool ControllerSingleton::chords_BlockMovement = false;
 
 //BasicPianoVisualisation
 bool ControllerSingleton::basicp_highlightBasicPiano = true;
@@ -75,6 +76,11 @@ bool ControllerSingleton::pitch_Visualize = true;
 bool ControllerSingleton::pitch_visualizeGraph = false;
 bool ControllerSingleton::pitch_visualizeBubble = false;
 bool ControllerSingleton::pitch_visualizeKeys = true;
+bool ControllerSingleton::pitch_wrapAround = true;
+bool ControllerSingleton::pitch_follow = false;
+//PitchTracking
+bool ControllerSingleton::pitchTrack_useDywa = true;
+bool ControllerSingleton::pitchTrack_useMPM = false;
 //==========================================================================
 //BASICCONTROL
 bool ControllerSingleton::isPlaying = false;

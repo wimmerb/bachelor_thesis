@@ -24,7 +24,7 @@ double SharedResources::trackedPitch = 1.0;
 
 //FiFo for tracked pitches
 std::vector<std::pair<double,int>> SharedResources::pitchHistory;
-const int SharedResources::pitchHistorySize = 2048;
+int SharedResources::pitchHistorySize = 2048;
 int SharedResources::pitchHistoryIndex = 0;
 
 //Delta in Samples

@@ -14,6 +14,7 @@
 
 #include "AppConfig.h"
 
+#include <audio_fft/audio_fft.h>
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_formats/juce_audio_formats.h>
@@ -27,6 +28,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_opengl/juce_opengl.h>
+#include <pitch_detector/pitch_detector.h>
 
 #include "BinaryData.h"
 

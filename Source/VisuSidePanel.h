@@ -18,7 +18,7 @@ public:
     ~VisuSidePanel();
 private:
     ToggleButton highlightBasicPiano {"highlightBasicPiano"};
-    ToggleButton basicPianoVisualizeWholeScale {"basicPianoVisualizeWholeScale"};
+    ToggleButton basicPianoVisualizeWholeScale {"chordsVisualizeWholeScale"};
     ToggleButton basicPianoVisualizeWithColours {"basicPianoVisualizeWithColours"};
     ToggleButton basicPianoVisualizeTransparent {"basicPianoVisualizeTransparent"};
     Slider basicPianoScreenPortion;
@@ -26,7 +26,7 @@ private:
     ToggleButton chordsVisualize {"chordsVisualize"};
     ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
     ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
-    ToggleButton chordsFadeOutHorizontal {"chordsFadeOutHorizontal"};
+    ToggleButton chordsFadeOutHorizontal {"blockMovement"};
     ToggleButton chordsVisualizeGuideline {"chordsVisualizeGuideline"};
 
     ToggleButton pitchVisualize {"pitchVisualize"};
@@ -34,8 +34,16 @@ private:
     ToggleButton pitchVisualizeBubbles {"pitchVisualizeBubbles"};
     ToggleButton pitchVisualizeKeys {"pitchVisualizeKeys"};
     
+    ToggleButton pitchTrackUseMPM {"pitchTrackUseMPM"};
+    ToggleButton pitchTrackUseDywa {"pitchTrackUseDywa"};
+    
+    ToggleButton pitchFollow {"pitchFollow"};
+    ToggleButton pitchWrapAround {"pitchWrapAround"};
+    
     ToggleButton dropShadows {"dropShadows"};
     ToggleButton keyBoardMode {"keyBoardMode"};
+    
+    
     
     Slider barsPerScreen;
     

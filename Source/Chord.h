@@ -22,7 +22,7 @@ public:
     Chord(String scale, String chordType, String base, float lengthInBars);
     ~Chord();
     //==========================================================================
-    void updatePosition(int samplePositionOfSong);
+    void updatePosition(float samplePositionOfSong);
     enum FunctionType {
         FUNC_1,
         FUNC_3,

@@ -52,6 +52,7 @@ public:
     static bool chords_visualizeWithColours;
     static bool chords_fadeOutHorizontal;
     static bool chords_visualizeGuidelines;
+    static bool chords_BlockMovement;
     static int barsPerScreen;
     
     //BasicPianoVisualisation
@@ -66,6 +67,12 @@ public:
     static bool pitch_visualizeGraph;
     static bool pitch_visualizeBubble;
     static bool pitch_visualizeKeys;
+    static bool pitch_wrapAround;
+    static bool pitch_follow;
+    
+    //PitchTracking
+    static bool pitchTrack_useDywa;
+    static bool pitchTrack_useMPM;
     //==========================================================================
     //BASICCONTROL
     static bool isPlaying;

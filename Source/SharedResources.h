@@ -22,7 +22,7 @@ public:
     
     //FiFo for tracked pitches as tuple (pitch, sampleCountinSong)
     static std::vector<std::pair<double, int>>  pitchHistory;
-    static const int pitchHistorySize;
+    static int pitchHistorySize;
     static int pitchHistoryIndex;
     
     //Delta in Samples
@@ -31,6 +31,8 @@ public:
     
     //Functionality for Counting in
     static bool countIn;
+    
+    
     
 private:
     

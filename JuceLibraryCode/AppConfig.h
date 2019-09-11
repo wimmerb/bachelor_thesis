@@ -48,6 +48,7 @@
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
 
 //==============================================================================
+#define JUCE_MODULE_AVAILABLE_audio_fft                  1
 #define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
 #define JUCE_MODULE_AVAILABLE_juce_audio_devices         1
 #define JUCE_MODULE_AVAILABLE_juce_audio_formats         1
@@ -61,6 +62,7 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics            1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                1
+#define JUCE_MODULE_AVAILABLE_pitch_detector             1
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 
@@ -72,7 +74,7 @@
 #endif
 
 #ifndef    JUCE_ASIO
- //#define JUCE_ASIO 0
+ #define   JUCE_ASIO 1
 #endif
 
 #ifndef    JUCE_WASAPI

@@ -37,7 +37,20 @@ Chord::Chord(String base, String chordType, String scale, float lengthInBars){
 Chord::~Chord(){
 }
 
-void Chord::updatePosition(int samplePositionOfSong){
+void Chord::updatePosition(float samplePositionOfSong){
+    if(ControllerSingleton::chords_BlockMovement){
+        std::vector<Chord>::iterator it;
+        for (it = chordVector->begin(); it != chordVector->end(); ++it){
+            if(it->beginsAtSampleCount < samplePositionOfSong && it->endsAtSampleCount > samplePositionOfSong){
+                float progress = (samplePositionOfSong-it->beginsAtSampleCount) / (it->endsAtSampleCount - it->beginsAtSampleCount);
+                float range = it->endsAtSampleCount - it->beginsAtSampleCount;
+                progress = std::pow(progress, 10.0);
+                samplePositionOfSong = it->beginsAtSampleCount + range*progress;
+                //samplePositionOfSong = it->beginsAtSampleCount;
+            }
+        }
+    }
+    
     positionX = (beginsAtSampleCount-samplePositionOfSong)/SharedResources::samplerate*1000.0f/ControllerSingleton::timePerBarMs;
     if(samplePositionOfSong > endsAtSampleCount){
         positionX += totalLengthOfSongInBars;

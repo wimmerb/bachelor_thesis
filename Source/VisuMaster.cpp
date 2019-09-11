@@ -57,8 +57,6 @@ VisuMaster::VisuMaster(){
 
     setFramesPerSecond(ControllerSingleton::fps);
 
-    
-    points = new Points(ControllerSingleton::nrPoints, (float) getHeight(), (float) getWidth()/ControllerSingleton::barsPerScreen, 15.0f, 1.0f);
 
     if(ControllerSingleton::chordVector == nullptr){
         chordVector = new std::vector<Chord>();
@@ -122,18 +120,22 @@ void VisuMaster::update(){
         if(ControllerSingleton::snapPitchToGrid){
             pitch = std::floor(pitch)+(round(fmod(pitch, 1.0f)*12.0f))/12.0f;
         }
-        
-        
-        points->followY(pitch);
     }
-    //reAdjustWindow(pitch, timeSinceLastFrameMs);
+    
+    setExitTime();
+    double timeSinceLastUpdate = b-a;
+    setEnterTime();
+    
+    if(ControllerSingleton::pitch_follow){
+        std::cout << "HERRRE";
+        reAdjustWindow(SharedResources::trackedPitch, timeSinceLastUpdate);
+    }
+    
     //UPDATE******************UPDATE
 }
 
 void VisuMaster::paint(Graphics& g){
-    setExitTime();
-    displayTiming();
-    setEnterTime();
+    
     
     
     if(!ControllerSingleton::keyBoardMode)
