@@ -33,7 +33,7 @@ private:
     //File f {"/Users/expert239/Desktop/bachelor_thesis/SongFolders"};
     File f;
     ComboBox songBox;
-    TextButton play {"Play"}, modify {"modify Song"};
-    String mainMessage {"Choose a Song"};
+    TextButton play {"play"}, modify {"this is a stub"};
+    String mainMessage {"choose a song"};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainMenu)
 };

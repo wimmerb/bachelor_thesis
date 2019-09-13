@@ -53,6 +53,7 @@ public:
     static bool chords_fadeOutHorizontal;
     static bool chords_visualizeGuidelines;
     static bool chords_BlockMovement;
+    static bool chords_ShowScale;
     static int barsPerScreen;
     
     //BasicPianoVisualisation

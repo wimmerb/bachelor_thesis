@@ -341,13 +341,13 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                 
                 samplePeekIntoPast += tmpDot.second;
                 
-                std::cout << "samplePeekIntoPast" << (float)samplePeekIntoPast << "\n";
+//                std::cout << "samplePeekIntoPast" << (float)samplePeekIntoPast << "\n";
                 
                 bool isLast = false;
                 
                 if((float)samplePeekIntoPast > timeWindowInSamples){
                     isLast = true;
-                    std::cout << "isLast!!!" << "\n";
+//                    std::cout << "isLast!!!" << "\n";
                 }
                 
                 float x = (1.0f-(float)samplePeekIntoPast/timeWindowInSamples)*ControllerSingleton::basicp_ScreenPortion*width;
@@ -366,7 +366,7 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                     p.lineTo(x, y);
                 }
                 
-                std::cout << "x" << x << "y" << y << "\n";
+//                std::cout << "x" << x << "y" << y << "\n";
                 
                 if(isLast)
                     break;
@@ -396,16 +396,16 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                 float respectiveSample = (float)i/(nrOfPoints+1.0f)*timeWindowInSamples;
                 float y = 0.0f;
                 while(true){
-                    std::cout << "INDEX" << (SharedResources::pitchHistoryIndex-j+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize << "\n";
+//                    std::cout << "INDEX" << (SharedResources::pitchHistoryIndex-j+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize << "\n";
                     auto tmpDot = SharedResources::pitchHistory[(SharedResources::pitchHistoryIndex-j+SharedResources::pitchHistorySize)%SharedResources::pitchHistorySize];
                     int sampleSize = tmpDot.second;
                     if (std::abs(j*sampleSize - respectiveSample) < sampleSize/2.0f){
                         if(std::isnan(tmpDot.first) || std::isinf(tmpDot.first)){
-                            std::cout<< "ISNAN";
+//                            std::cout<< "ISNAN";
                             break;
                             
                         }
-                        std::cout << "jo" << tmpDot.first << "\n";
+//                        std::cout << "jo" << tmpDot.first << "\n";
                         double trackedPitch = tmpDot.first;
                         if(ControllerSingleton::pitch_wrapAround){
                             trackedPitch = pitchWrapAround(visu_lB, visu_r, trackedPitch);
@@ -415,7 +415,7 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                         if(std::isnan(y) || std::isinf(y)){
                             y = 0.0f;
                         }
-                        std::cout << "y" << y << "\n" ;
+//                        std::cout << "y" << y << "\n" ;
                         break;
                     }
                     j++;
@@ -715,6 +715,8 @@ void ChordVisualisation::visualizeNoteAsDot(Chord c, Chord::FunctionType functio
 
 void ChordVisualisation::visualizeNoteAsDotBackground(Chord c, Chord::FunctionType functionType, int func, float visu_lB, float visu_r, float relBase, int i, Graphics& g, float height, float width, float x, float y, float w, float h){
 
+    if(!ControllerSingleton::chords_ShowScale)
+        return;
     //bool isBlackKey = isBlack(func);
     
     Colour col = Colours::white.interpolatedWith(Colour::fromRGBA(0,0,0,0), isCurrentChord(c)?0.4f:0.75f);
@@ -793,34 +795,34 @@ double ChordVisualisation::pitchWrapAround(float visu_lB, float visu_r, double p
         float lowerWrapAroundBound = visu_lB;
         float upperWrapAroundBound = visu_lB+visu_r;
         if(pitch > upperWrapAroundBound){
-            std::cout << "===============\n";
-            std::cout << "higher\n";
-            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
-            std::cout << "upperBound " << upperWrapAroundBound << "\n";
-            std::cout << "pitch" << pitch << "\n";
+//            std::cout << "===============\n";
+//            std::cout << "higher\n";
+//            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
+//            std::cout << "upperBound " << upperWrapAroundBound << "\n";
+//            std::cout << "pitch" << pitch << "\n";
             float discrepancy = pitch - upperWrapAroundBound;
             discrepancy = std::ceil(discrepancy);
             discrepancy = 0.5f*discrepancy;
             discrepancy = std::ceil(discrepancy);
             discrepancy = 2.0f*discrepancy;
             pitch = pitch - discrepancy;
-            std::cout << "newpitch" << pitch << "\n";
-            std::cout << "===============\n";
+//            std::cout << "newpitch" << pitch << "\n";
+//            std::cout << "===============\n";
         }
         else if(SharedResources::trackedPitch < lowerWrapAroundBound){
-            std::cout << "===============\n";
-            std::cout << "lower\n";
-            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
-            std::cout << "upperBound " << upperWrapAroundBound << "\n";
-            std::cout << "pitch" << pitch << "\n";
+//            std::cout << "===============\n";
+//            std::cout << "lower\n";
+//            std::cout << "lowerBound " << lowerWrapAroundBound << "\n";
+//            std::cout << "upperBound " << upperWrapAroundBound << "\n";
+//            std::cout << "pitch" << pitch << "\n";
             float discrepancy = lowerWrapAroundBound - pitch;
             discrepancy = std::ceil(discrepancy);
             discrepancy = 0.5f*discrepancy;
             discrepancy = std::ceil(discrepancy);
             discrepancy = 2.0f*discrepancy;
             pitch = pitch + discrepancy;
-            std::cout << "newpitch" << pitch << "\n";
-            std::cout << "===============\n";
+//            std::cout << "newpitch" << pitch << "\n";
+//            std::cout << "===============\n";
         }
     
     return pitch;

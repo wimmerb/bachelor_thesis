@@ -67,6 +67,8 @@ private:
             {
                     {"Major",
                     {FUNC_1, FUNC_NAN, FUNC_9, FUNC_NAN, FUNC_3, FUNC_11, FUNC_NAN, FUNC_5, FUNC_NAN, FUNC_13, FUNC_NAN, FUNC_7}},
+                    {"Lydian",
+                    {FUNC_1, FUNC_NAN, FUNC_9, FUNC_NAN, FUNC_3, FUNC_NAN, FUNC_11, FUNC_5, FUNC_NAN, FUNC_13, FUNC_NAN, FUNC_7}},
                     {"Mixolydian",
                      {FUNC_1, FUNC_NAN, FUNC_9, FUNC_NAN, FUNC_3, FUNC_11, FUNC_NAN, FUNC_5, FUNC_NAN, FUNC_13, FUNC_7, FUNC_NAN}},
                      {"HM5",
@@ -75,6 +77,8 @@ private:
                      {FUNC_1, FUNC_9, FUNC_NAN, FUNC_9, FUNC_3, FUNC_NAN, FUNC_11, FUNC_NAN, FUNC_13, FUNC_NAN, FUNC_7, FUNC_NAN}},
                     {"Minor",
                      {FUNC_1, FUNC_NAN, FUNC_9, FUNC_3, FUNC_NAN, FUNC_11, FUNC_NAN, FUNC_5, FUNC_13, FUNC_NAN, FUNC_7, FUNC_NAN}},
+                    {"Phrygian",
+                    {FUNC_1, FUNC_9, FUNC_NAN, FUNC_3, FUNC_NAN, FUNC_11, FUNC_NAN, FUNC_5, FUNC_13, FUNC_NAN, FUNC_7, FUNC_NAN}},
                     {"Dorian",
                      {FUNC_1, FUNC_NAN, FUNC_9, FUNC_3, FUNC_NAN, FUNC_11, FUNC_NAN, FUNC_5, FUNC_NAN, FUNC_13, FUNC_7, FUNC_NAN}},
                     {"Harmonic",

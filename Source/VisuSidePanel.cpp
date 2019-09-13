@@ -2,7 +2,7 @@
   ==============================================================================
 
     VisuSidePanel.cpp
-    Created: 1 Aug 2019 4:53:40pm
+    Created: 1 Aug 2019 4:53:31pm
     Author:  expert239
 
   ==============================================================================
@@ -15,7 +15,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
     : SidePanel(title, width, positionOnLeft) {
     
         highlightBasicPiano.setToggleState(ControllerSingleton::basicp_highlightBasicPiano, NotificationType::dontSendNotification);
-        basicPianoVisualizeWholeScale.setToggleState(ControllerSingleton::basicp_visualizeWholeScale, NotificationType::dontSendNotification);
+        basicPianoVisualizeWholeScale.setToggleState(!ControllerSingleton::basicp_visualizeWholeScale, NotificationType::dontSendNotification);
         basicPianoVisualizeWithColours.setToggleState(ControllerSingleton::basicP_visualizeWithColours, NotificationType::dontSendNotification);
         basicPianoVisualizeTransparent.setToggleState(ControllerSingleton::basicP_visualizeTransparent, NotificationType::dontSendNotification);
         chordsVisualize.setToggleState(ControllerSingleton::chords_Visualize, NotificationType::dontSendNotification);
@@ -23,6 +23,8 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         chordsVisualizeAsKeys.setToggleState(ControllerSingleton::chords_visualizeAsKeys, NotificationType::dontSendNotification);
         chordsVisualizeGuideline.setToggleState(ControllerSingleton::chords_visualizeGuidelines, NotificationType::dontSendNotification);
         chordsFadeOutHorizontal.setToggleState(ControllerSingleton::chords_BlockMovement, NotificationType::dontSendNotification);
+        chordsShowScale.setToggleState(ControllerSingleton::chords_ShowScale, NotificationType::dontSendNotification);
+        
         dropShadows.setToggleState(ControllerSingleton::dropShadows, NotificationType::dontSendNotification);
         keyBoardMode.setToggleState(ControllerSingleton::keyBoardMode, NotificationType::dontSendNotification);
         pitchVisualize.setToggleState(ControllerSingleton::pitch_Visualize, NotificationType::dontSendNotification);
@@ -37,18 +39,23 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         barsPerScreen.setSliderStyle(Slider::LinearHorizontal);
         basicPianoScreenPortion.setSliderStyle(Slider::LinearHorizontal);
         
-        barsPerScreen.setTextBoxStyle(Slider::NoTextBox, true, 40, 40);
-        basicPianoScreenPortion.setTextBoxStyle(Slider::NoTextBox, true, 40, 40);
+        barsPerScreen.setTextBoxStyle(Slider::TextBoxLeft, true, 200, 41);
+        barsPerScreen.textFromValueFunction = [](double value){
+            String x = "Bars per Screen: ";
+            x += (int)std::round(value);
+            return x;
+        };
+        basicPianoScreenPortion.setTextBoxStyle(Slider::NoTextBox, true, 41, 41);
         
         barsPerScreen.setValue(ControllerSingleton::barsPerScreen);
         basicPianoScreenPortion.setValue(ControllerSingleton::basicp_ScreenPortion);
         
-        addAndMakeVisible(highlightBasicPiano);
+        //addAndMakeVisible(highlightBasicPiano);
         addAndMakeVisible(basicPianoVisualizeWholeScale);
         //addAndMakeVisible(basicPianoVisualizeWithColours);
         addAndMakeVisible(basicPianoVisualizeTransparent);
         //addAndMakeVisible(basicPianoScreenPortion);
-        addAndMakeVisible(chordsVisualize);
+        //addAndMakeVisible(chordsVisualize);
         addAndMakeVisible(chordsVisualizeAsDots);
         addAndMakeVisible(chordsVisualizeAsKeys);
         addAndMakeVisible(chordsFadeOutHorizontal);
@@ -64,9 +71,10 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         addAndMakeVisible(pitchTrackUseDywa);
         addAndMakeVisible(pitchFollow);
         addAndMakeVisible(pitchWrapAround);
+        //addAndMakeVisible(chordsShowScale);
         
         highlightBasicPiano.onClick = [this]{ControllerSingleton::basicp_highlightBasicPiano = highlightBasicPiano.getToggleState();};
-        basicPianoVisualizeWholeScale.onClick = [this]{ControllerSingleton::basicp_visualizeWholeScale = basicPianoVisualizeWholeScale.getToggleState();};
+        basicPianoVisualizeWholeScale.onClick = [this]{ControllerSingleton::basicp_visualizeWholeScale = !basicPianoVisualizeWholeScale.getToggleState();};
         basicPianoVisualizeWithColours.onClick = [this]{ControllerSingleton::basicP_visualizeWithColours = basicPianoVisualizeWithColours.getToggleState();};
         basicPianoVisualizeTransparent.onClick = [this]{ControllerSingleton::basicP_visualizeTransparent = basicPianoVisualizeTransparent.getToggleState();};
         chordsVisualize.onClick = [this]{ControllerSingleton::chords_Visualize = chordsVisualize.getToggleState();};
@@ -74,6 +82,7 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         chordsVisualizeAsKeys.onClick = [this]{ControllerSingleton::chords_visualizeAsKeys = chordsVisualizeAsKeys.getToggleState();};
         chordsFadeOutHorizontal.onClick = [this]{ControllerSingleton::chords_BlockMovement = chordsFadeOutHorizontal.getToggleState();};
         chordsVisualizeGuideline.onClick = [this]{ControllerSingleton::chords_visualizeGuidelines = chordsVisualizeGuideline.getToggleState();};
+        chordsShowScale.onClick = [this]{ControllerSingleton::chords_ShowScale = chordsShowScale.getToggleState();};
         dropShadows.onClick = [this]{ControllerSingleton::dropShadows = dropShadows.getToggleState();};
         keyBoardMode.onClick = [this]{ControllerSingleton::keyBoardMode = keyBoardMode.getToggleState();};
         pitchVisualize.onClick = [this]{ControllerSingleton::pitch_Visualize = pitchVisualize.getToggleState();};
@@ -90,8 +99,8 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         basicPianoScreenPortion.setRange(0.1,1.0);
         basicPianoScreenPortion.onValueChange = [this]{ControllerSingleton::basicp_ScreenPortion = (float)basicPianoScreenPortion.getValue();};
         
-        //chordsVisualizeAsDots.setRadioGroupId(1000);
-        //chordsVisualizeAsKeys.setRadioGroupId(1000);
+        chordsVisualizeAsDots.setRadioGroupId(1000);
+        chordsVisualizeAsKeys.setRadioGroupId(1000);
         
         pitchVisualizeGraph.setRadioGroupId(1001);
         pitchVisualizeBubbles.setRadioGroupId(1001);
@@ -111,33 +120,39 @@ void VisuSidePanel::resized(){
     SidePanel::resized();
     auto bounds = getLocalBounds().removeFromRight(280);
     bounds.removeFromTop(50).removeFromLeft(50);
-    dropShadows.setBounds(bounds.removeFromTop(40));
-    keyBoardMode.setBounds(bounds.removeFromTop(40));
-    bounds.removeFromTop(40);
-    highlightBasicPiano.setBounds(bounds.removeFromTop(40));
-    //basicPianoVisualizeWithColours.setBounds(bounds.removeFromTop(40));
+    dropShadows.setBounds(bounds.removeFromTop(31));
+    keyBoardMode.setBounds(bounds.removeFromTop(31));
+    bounds.removeFromTop(31);
     
-    basicPianoVisualizeTransparent.setBounds(bounds.removeFromTop(40));
-    //basicPianoScreenPortion.setBounds(bounds.removeFromTop(40));
-    bounds.removeFromTop(40);
-    chordsVisualize.setBounds(bounds.removeFromTop(40));
-    chordsVisualizeAsDots.setBounds(bounds.removeFromTop(40));
-    chordsVisualizeAsKeys.setBounds(bounds.removeFromTop(40));
-    chordsFadeOutHorizontal.setBounds(bounds.removeFromTop(40));
-    basicPianoVisualizeWholeScale.setBounds(bounds.removeFromTop(40));
-    chordsVisualizeGuideline.setBounds(bounds.removeFromTop(40));
-    bounds.removeFromTop(40);
-    pitchVisualize.setBounds(bounds.removeFromTop(40));
-    pitchVisualizeGraph.setBounds(bounds.removeFromTop(40));
-    pitchVisualizeBubbles.setBounds(bounds.removeFromTop(40));
-    pitchVisualizeKeys.setBounds(bounds.removeFromTop(40));
-    pitchFollow.setBounds(bounds.removeFromTop(40));
-    pitchWrapAround.setBounds(bounds.removeFromTop(40));
-    //bounds.removeFromTop(40);
-    barsPerScreen.setBounds(bounds.removeFromTop(40));
-    //bounds.removeFromTop(40);
-    pitchTrackUseDywa.setBounds(bounds.removeFromTop(40));
-    pitchTrackUseMPM.setBounds(bounds.removeFromTop(40));
+    
+    pitchVisualize.setBounds(bounds.removeFromTop(31));
+    pitchVisualizeGraph.setBounds(bounds.removeFromTop(31).reduced(30, 0));
+    pitchVisualizeBubbles.setBounds(bounds.removeFromTop(31).reduced(30, 0));
+    pitchVisualizeKeys.setBounds(bounds.removeFromTop(31).reduced(30, 0));
+    bounds.removeFromTop(31);
+    pitchFollow.setBounds(bounds.removeFromTop(31));
+    pitchWrapAround.setBounds(bounds.removeFromTop(31));
+    bounds.removeFromTop(31);
+    //highlightBasicPiano.setBounds(bounds.removeFromTop(31));
+    //basicPianoVisualizeWithColours.setBounds(bounds.removeFromTop(31));
+    
+    basicPianoVisualizeTransparent.setBounds(bounds.removeFromTop(31));
+    //chordsShowScale.setBounds(bounds.removeFromTop(31));
+    //basicPianoScreenPortion.setBounds(bounds.removeFromTop(31));
+    bounds.removeFromTop(31);
+    //chordsVisualize.setBounds(bounds.removeFromTop(31));
+    basicPianoVisualizeWholeScale.setBounds(bounds.removeFromTop(31));
+    chordsVisualizeAsDots.setBounds(bounds.removeFromTop(31));
+    chordsVisualizeAsKeys.setBounds(bounds.removeFromTop(31));
+    chordsFadeOutHorizontal.setBounds(bounds.removeFromTop(31));
+    bounds.removeFromTop(31);
+    chordsVisualizeGuideline.setBounds(bounds.removeFromTop(31));
+    
+    bounds.removeFromTop(31);
+    barsPerScreen.setBounds(bounds.removeFromTop(31));
+    bounds.removeFromTop(31);
+    pitchTrackUseDywa.setBounds(bounds.removeFromTop(31));
+    pitchTrackUseMPM.setBounds(bounds.removeFromTop(31));
 }
 /*
  chordsFadeOutHorizontal.setToggleState(ControllerSingleton::chords_fadeOutHorizontal, NotificationType::dontSendNotification);

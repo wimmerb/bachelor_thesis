@@ -1,0 +1,23 @@
+{   "_comment": "bpm=beatsperminute,bpb=beatsperbar,
+    base=e.g. C or C# , chordtype = e.g. 7b9,
+    scale=e.g. Dorian, length_in_bars is a float",
+    
+    "name" : "VariousChordTypes",
+    "bpm" : 70,
+    "bpb" : 4,
+    "chords":[  {   "base" :            "C",
+        "chordtype" :       "maj7",
+        "scale" :           "Major",
+        "length_in_bars" :  1.0
+    },
+    {   "base" :            "C",
+        "chordtype" :       "7",
+        "scale" :           "Mixolydian",
+        "length_in_bars" :  1.0
+    },
+    {   "base" :            "C",
+        "chordtype" :       "m7",
+        "scale" :           "Dorian",
+        "length_in_bars" :  1.0
+    },
+    ]}

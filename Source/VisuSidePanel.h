@@ -18,30 +18,31 @@ public:
     ~VisuSidePanel();
 private:
     ToggleButton highlightBasicPiano {"highlightBasicPiano"};
-    ToggleButton basicPianoVisualizeWholeScale {"chordsVisualizeWholeScale"};
+    ToggleButton basicPianoVisualizeWholeScale {"Chord Notes Only"};
     ToggleButton basicPianoVisualizeWithColours {"basicPianoVisualizeWithColours"};
-    ToggleButton basicPianoVisualizeTransparent {"basicPianoVisualizeTransparent"};
+    ToggleButton basicPianoVisualizeTransparent {"Show Scale On Piano"};
     Slider basicPianoScreenPortion;
     
     ToggleButton chordsVisualize {"chordsVisualize"};
-    ToggleButton chordsVisualizeAsDots {"chordsVisualizeAsDots"};
-    ToggleButton chordsVisualizeAsKeys {"chordsVisualizeAsKeys"};
-    ToggleButton chordsFadeOutHorizontal {"blockMovement"};
-    ToggleButton chordsVisualizeGuideline {"chordsVisualizeGuideline"};
+    ToggleButton chordsVisualizeAsDots {"Show Chords as Dots"};
+    ToggleButton chordsVisualizeAsKeys {"Show Chords as Bars"};
+    ToggleButton chordsFadeOutHorizontal {"Move Chords in Blocks"};
+    ToggleButton chordsVisualizeGuideline {"Show Guideline"};
+    ToggleButton chordsShowScale {"Show Scale"};
 
-    ToggleButton pitchVisualize {"pitchVisualize"};
-    ToggleButton pitchVisualizeGraph {"pitchVisualizeGraph"};
-    ToggleButton pitchVisualizeBubbles {"pitchVisualizeBubbles"};
-    ToggleButton pitchVisualizeKeys {"pitchVisualizeKeys"};
+    ToggleButton pitchVisualize {"Show Current Pitch:"};
+    ToggleButton pitchVisualizeGraph {"As Graph"};
+    ToggleButton pitchVisualizeBubbles {"As Bubbles"};
+    ToggleButton pitchVisualizeKeys {"As Marked Keys"};
     
-    ToggleButton pitchTrackUseMPM {"pitchTrackUseMPM"};
-    ToggleButton pitchTrackUseDywa {"pitchTrackUseDywa"};
+    ToggleButton pitchTrackUseMPM {"MacLeod Pitch Tracker"};
+    ToggleButton pitchTrackUseDywa {"Dynamic Wavelet Pitch Tracker"};
     
-    ToggleButton pitchFollow {"pitchFollow"};
-    ToggleButton pitchWrapAround {"pitchWrapAround"};
+    ToggleButton pitchFollow {"Follow Pitch with Screen"};
+    ToggleButton pitchWrapAround {"Transpose Pitch to Fit"};
     
-    ToggleButton dropShadows {"dropShadows"};
-    ToggleButton keyBoardMode {"keyBoardMode"};
+    ToggleButton dropShadows {"Drop Shadows - !Slower Performance!"};
+    ToggleButton keyBoardMode {"Keyboard Mode - !Slower Performance!"};
     
     
     

@@ -93,7 +93,7 @@ public:
         if(ControllerSingleton::songAudioFileName.isEmpty()){
             
             std::cout << "empty";
-            std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::SONGS_1625_ba_hacky_wav, BinaryData::SONGS_1625_ba_hacky_wavSize, false));
+            std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::SONGS_1625_wav, BinaryData::SONGS_1625_wavSize, false));
             reader.reset(formatManager.createReaderFor (memoryInput.release()));
             
         }

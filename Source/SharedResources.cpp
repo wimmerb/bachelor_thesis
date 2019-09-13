@@ -12,7 +12,6 @@
 
 void SharedResources::init() {
     for(int i = 0; i < pitchHistorySize; i++){
-        std::cout << "beenthere";
         pitchHistory.push_back(std::pair<double, int>(0.0, 0));
     }
     pitchHistoryIndex = 0;

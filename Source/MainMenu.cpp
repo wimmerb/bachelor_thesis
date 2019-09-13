@@ -125,6 +125,9 @@ void MainMenu::comboBoxChanged(ComboBox * boxThatHasChanged){
         }
 
     ControllerSingleton::songAudioFileName = b;
+    ControllerSingleton::bpm = bpm;
+    ControllerSingleton::bpb = bpb;
+    ControllerSingleton::timePerBarMs = 60000.0f/((float)bpm)*(float)bpb;
     repaint();
 }
 

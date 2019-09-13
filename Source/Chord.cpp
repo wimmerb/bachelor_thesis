@@ -51,7 +51,7 @@ void Chord::updatePosition(float samplePositionOfSong){
         }
     }
     
-    positionX = (beginsAtSampleCount-samplePositionOfSong)/SharedResources::samplerate*1000.0f/ControllerSingleton::timePerBarMs;
+    positionX = (beginsAtSampleCount-samplePositionOfSong)/SharedResources::samplerate*1000.0f/ControllerSingleton::timePerBarMs;//TODO timePerBar handeln!!!
     if(samplePositionOfSong > endsAtSampleCount){
         positionX += totalLengthOfSongInBars;
     }
@@ -60,6 +60,15 @@ void Chord::updatePosition(float samplePositionOfSong){
             positionX += totalLengthOfSongInBars;
         }
     }
+    std::cout << "=======INIT=========\n";
+    std::cout << "baseName " << baseName << "\n";
+    std::cout << "chordName " << chordName << "\n";
+    std::cout << "positionX " << positionX << "\n";
+    std::cout << "lengthInBars " << lengthInBars << "\n";
+    std::cout << "beginsAtSampleCount " << beginsAtSampleCount << "\n";
+    std::cout << "endsAtSampleCount " << endsAtSampleCount << "\n";
+    std::cout << "=======INIT=========\n";
+    
 //    positionX -= (timeDeltaMs/ControllerSingleton::timePerBarMs);//*(float)ControllerSingleton::isPlaying;
 //    if(positionX <= -lengthInBars){
 //        positionX += totalLengthOfSongInBars;
@@ -122,6 +131,7 @@ void Chord::initFromChordVector(std::vector<Chord> * cv){
     
     totalLengthOfSongInBars = overallLength;
     //if totalLengthOfSongInBars*bpb/bpm*60*samplerateofsong != samplesizeofsong -> FAIL
+    std::cout << "TOTALLENGTH" << overallLength << "\n";
 }
 void Chord::initGuidelines(){
     Chord nextChord = acquireNext();

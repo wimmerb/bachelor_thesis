@@ -30,8 +30,8 @@ void ControllerSingleton::init(std::vector<bool> bla, bool basicp__visualizeWhol
 
 int ControllerSingleton::fps = 60;
 
-int ControllerSingleton::barsPerScreen = 4;
-bool ControllerSingleton::dropShadows = true;
+int ControllerSingleton::barsPerScreen = 2;
+bool ControllerSingleton::dropShadows = false;
 //TODO beatsperbar, bpm, timeperbarMs, fps sollten eher in Model/SharedResources
 //beatsperbar
 int ControllerSingleton::bpb = 4;
@@ -63,6 +63,7 @@ bool ControllerSingleton::chords_visualizeWithColours = true;
 bool ControllerSingleton::chords_fadeOutHorizontal = false;
 bool ControllerSingleton::chords_visualizeGuidelines = true;
 bool ControllerSingleton::chords_BlockMovement = false;
+bool ControllerSingleton::chords_ShowScale = true;
 
 //BasicPianoVisualisation
 bool ControllerSingleton::basicp_highlightBasicPiano = true;

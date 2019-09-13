@@ -4,14 +4,20 @@
               maxBinaryFileSize="20971520">
   <MAINGROUP id="R66v5n" name="bachelor_thesis">
     <GROUP id="{228C2AC8-9CFF-4545-F7A1-C4D1B0F09AB3}" name="bin">
+      <FILE id="VpDnd0" name="SONGS_ModalInterchange.wav" compile="0" resource="1"
+            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.wav"/>
+      <FILE id="lnYaWE" name="SONGS_ModalInterchange.json" compile="0" resource="1"
+            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.json"/>
+      <FILE id="qxuE8q" name="SONGS_VariousChordTypes.wav" compile="0" resource="1"
+            file="SongFolders/ChordSong/SONGS_VariousChordTypes.wav"/>
+      <FILE id="D79QAc" name="SONGS_VariousChordTypes.json" compile="0" resource="1"
+            file="SongFolders/ChordSong/SONGS_VariousChordTypes.json"/>
       <FILE id="eynqAO" name="VISU_wallpaperbro.jpeg" compile="0" resource="1"
             file="../VISU_wallpaperbro.jpeg"/>
-      <FILE id="q9xZev" name="SONGS_1625_ba_hacky.json" compile="0" resource="1"
-            file="SongFolders/1625/SONGS_1625_ba_hacky.json"/>
+      <FILE id="q9xZev" name="SONGS_1625.json" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.json"/>
       <FILE id="CT7ZA8" name="AUDIO_Stick_Count.wav" compile="0" resource="1"
             file="../AUDIO_Stick_Count.wav"/>
-      <FILE id="APPeg8" name="SONGS_1625_ba_hacky.wav" compile="0" resource="1"
-            file="SongFolders/1625/SONGS_1625_ba_hacky.wav"/>
+      <FILE id="APPeg8" name="SONGS_1625.wav" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.wav"/>
     </GROUP>
     <GROUP id="{D472E6FD-5822-732D-AEF1-78C2A98AA98C}" name="Source">
       <FILE id="htQmay" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
