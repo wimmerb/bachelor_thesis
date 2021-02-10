@@ -333,7 +333,7 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
             
             float timeWindowInSamples = timeWindowInSeconds*SharedResources::samplerate;
             
-            
+            double lastTrackedPitch = 10000.0;
             Path p;
             int samplePeekIntoPast = 0;
             for(int i = 0; i < SharedResources::pitchHistorySize; i++){
@@ -359,13 +359,13 @@ void ChordVisualisation::visualizePitch(float visu_lB, float visu_r, Graphics &g
                 
                 float y = ((visu_lB+visu_r)-trackedPitch)/visu_r*height;
                 
-                if(i == 0){
+                if(i == 0 || std::abs(trackedPitch-lastTrackedPitch) > 1.0/6.0){
                     p.startNewSubPath(x, y);
                 }
                 else{
                     p.lineTo(x, y);
                 }
-                
+                lastTrackedPitch = trackedPitch;
 //                std::cout << "x" << x << "y" << y << "\n";
                 
                 if(isLast)

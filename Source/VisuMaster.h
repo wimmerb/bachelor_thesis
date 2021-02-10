@@ -23,7 +23,7 @@
     your controls and content.
 */
 
-class VisuMaster   : public AnimatedAppComponent, public OpenGLRenderer
+class VisuMaster   : public AnimatedAppComponent //, public OpenGLRenderer
 {
 public:
     //==============================================================================
@@ -32,6 +32,9 @@ public:
     
     //==============================================================================
     void mouseDrag(const MouseEvent &event) override;
+    void mouseUp(const MouseEvent &event) override;
+    void mouseDown(const MouseEvent &event) override;
+    void mouseMove(const MouseEvent &event) override;
     std::function<void(const String & s)> informParent;
 
 
@@ -69,10 +72,13 @@ private:
     float virtScreenBorder = 0.2f;
     float screenAcceleration = 0.55f;
     
-    void renderOpenGL() override;
+    
+//    void renderOpenGL() override;
+    #if JUCE_IOS
     OpenGLContext openGLContext;
-    void newOpenGLContextCreated() override;
-    void openGLContextClosing() override;
+    #endif
+//    void newOpenGLContextCreated() override;
+//    void openGLContextClosing() override;
     
 
 

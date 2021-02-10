@@ -14,6 +14,7 @@
 
 MainMenu::MainMenu()
 {
+    setOpaque(true);
 //    MemoryInputStream mb (BinaryData::BA_hacky_1625_wav, (size_t)BinaryData::BA_hacky_1625_wavSize, true);
 //    mb.setPosition(0);
 //    for (int i = 0; i < 10; i++){

@@ -68,7 +68,8 @@ public:
                                                                                  false, // treat channels as stereo pairs
                                                                                  false) // hide advanced options
     {
-        setOpaque (true);
+        //setOpaque (true);
+        setVisible(false);
         setAudioChannels (2, 2);  // we want to also control output
 
         setSize (700, 500);
@@ -94,6 +95,7 @@ public:
             
             std::cout << "empty";
             std::unique_ptr<MemoryInputStream> memoryInput( new MemoryInputStream (BinaryData::SONGS_1625_wav, BinaryData::SONGS_1625_wavSize, false));
+            formatManager.createReaderFor(memoryInput.release());
             reader.reset(formatManager.createReaderFor (memoryInput.release()));
             
         }
@@ -225,12 +227,14 @@ public:
         
         double fadeVolumeOld = fadeVolume;
         
+        bool playBackPlaying = true;
+            
         if(!isPlaying && fadeVolume == 0.0){
             if(wantToStop){
                 reset();
                 wantToStop = false;
             }
-            return;
+            playBackPlaying = false;
         }
         
         
@@ -251,44 +255,87 @@ public:
             }
             auto samplesThisTime = jmin (outputSamplesRemaining, bufferSamplesRemaining);
             
-            
-
-            for (auto channel = 0; channel < numOutputChannels; ++channel)
-            {
-                if(SharedResources::countIn){
-                    bufferToFill.buffer->copyFrom (channel,
-                                                   outputSamplesOffset,
-                                                   counterFileToPlay,
-                                                   channel % numInputChannels,
-                                                   counterFilePositionToPlay,
-                                                   samplesThisTime);
+            //zeromem (SynthBuffer, sizeof (SynthBuffer));
+            double quantizedPitch = std::floor((double)SharedResources::synthPitch) + std::round(std::fmod((double)SharedResources::synthPitch, 1.0)*12.0)/12.0;
+            double pitchInHz = 110.0 * std::pow(2.0, quantizedPitch);
+            double AngularDistance = 2.0*MathConstants<double>::pi*pitchInHz/(double)SharedResources::samplerate;
+            for(int i = 0; i < samplesThisTime; i++){
+                SynthPosition += AngularDistance;
+                //SynthPosition = std::fmod(SynthPosition, 2.0*pi);
+                if(SharedResources::synthIsPlaying){
+                    SynthVolume = std::min(1.0, SynthVolume+0.1);
                 }
                 else{
-                    bufferToFill.buffer->copyFrom (channel,
-                                                   outputSamplesOffset,
-                                                   fileToPlay,
-                                                   channel % numInputChannels,
-                                                   positionToPlay,
-                                                   samplesThisTime);
+                    SynthVolume = std::max(0.0, SynthVolume-0.1);
                 }
-                bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolumeOld, fadeVolume);
+                SynthBuffer[i] = (float)std::sin(SynthPosition)*SynthVolume;
             }
+            
+            if(playBackPlaying){
+                for (auto channel = 0; channel < numOutputChannels; ++channel)
+                {
+                    if(SharedResources::countIn){
+                        bufferToFill.buffer->copyFrom (channel,
+                                                       outputSamplesOffset,
+                                                       counterFileToPlay,
+                                                       channel % numInputChannels,
+                                                       counterFilePositionToPlay,
+                                                       samplesThisTime);
+                        bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolumeOld, fadeVolume);
+                        bufferToFill.buffer->addFrom(channel,
+                                                     outputSamplesOffset,
+                                                     SynthBuffer,
+                                                     samplesThisTime, 0.15f
+                                                     );
+                    }
+                    else{
+                        bufferToFill.buffer->copyFrom (channel,
+                                                       outputSamplesOffset,
+                                                       fileToPlay,
+                                                       channel % numInputChannels,
+                                                       positionToPlay,
+                                                       samplesThisTime);
+                        bufferToFill.buffer->applyGainRamp(channel, outputSamplesOffset, samplesThisTime, fadeVolumeOld, fadeVolume);
+                        bufferToFill.buffer->addFrom(channel,
+                                                     outputSamplesOffset,
+                                                     SynthBuffer,
+                                                     samplesThisTime, 0.3f
+                                                     );
+                    }
+                    bufferToFill.buffer->applyGain(channel, outputSamplesOffset, samplesThisTime, 0.5f);
+                }
 
-            outputSamplesRemaining -= samplesThisTime;
-            outputSamplesOffset += samplesThisTime;
-            if(SharedResources::countIn){
-                counterFilePositionToPlay += samplesThisTime;
-                positionToPlay = 0-counterFileToPlay.getNumSamples()+counterFilePositionToPlay+SharedResources::sampleCountOfSong;
-                if (counterFilePositionToPlay == counterFileToPlay.getNumSamples()){
-                    counterFilePositionToPlay = 0;
-                    positionToPlay = 0;
-                    SharedResources::countIn = false;
+                outputSamplesRemaining -= samplesThisTime;
+                outputSamplesOffset += samplesThisTime;
+                if(SharedResources::countIn){
+                    counterFilePositionToPlay += samplesThisTime;
+                    positionToPlay = 0-counterFileToPlay.getNumSamples()+counterFilePositionToPlay+SharedResources::sampleCountOfSong;
+                    if (counterFilePositionToPlay == counterFileToPlay.getNumSamples()){
+                        counterFilePositionToPlay = 0;
+                        positionToPlay = 0;
+                        SharedResources::countIn = false;
+                    }
+                }
+                else{
+                    positionToPlay += samplesThisTime;
+                    if (positionToPlay == fileToPlay.getNumSamples())
+                        positionToPlay = 0;
                 }
             }
             else{
-                positionToPlay += samplesThisTime;
-                if (positionToPlay == fileToPlay.getNumSamples())
-                    positionToPlay = 0;
+                for (auto channel = 0; channel < numOutputChannels; ++channel)
+                {
+                        bufferToFill.buffer->addFrom(channel,
+                                                     outputSamplesOffset,
+                                                     SynthBuffer,
+                                                     samplesThisTime, 0.3f
+                                                     );
+                    bufferToFill.buffer->applyGain(channel, outputSamplesOffset, samplesThisTime, 0.5f);
+                }
+                
+                
+                outputSamplesRemaining -= samplesThisTime;
+                outputSamplesOffset += samplesThisTime;
             }
 
             
@@ -313,28 +360,40 @@ public:
             //OriginalPitchtrack
             
             double rms = 0.0;
-            rms = 1.0;
+//            rms = 1.0;
             for(int i = 0; i < fftSize; i++){
-                rms += std::abs(ptData[i]);
+                rms += ptData[i] * ptData[i];
             }
+            rms = std::sqrt(rms/fftSize);
+            
+            std::cout << rms << "RMS \n";
+            
             //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%s", "§§§§§§§§§§§RMS§§§§§§§§§\n");
 
-            rms = rms/(double)fftSize;
-            //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%lf", rms);
-            if(rms>0.004){
-                double x = 1.0;
-                
-                if(ControllerSingleton::pitchTrack_useMPM)
-                    x = (double)pitchMPM.getPitch(fftData);
-                if(ControllerSingleton::pitchTrack_useDywa)
-                    x = samplerateComp*dywapitch_computepitch(tracker, ptData, 0, fftSize);
-                
-                
-                if (x > 0.0){
-                    SharedResources::trackedPitch = log2(x/55.0);
-                }
-            }
+            //rms = rms/(double)fftSize;
             
+            //__android_log_print(ANDROID_LOG_ERROR, "TRACKERS", "%lf", rms);
+            
+            
+                double x = 1.0;
+                if(SharedResources::synthIsPlaying){
+                    x = 110.0 * std::pow(2.0, SharedResources::synthPitch);
+                    if (x > 0.0)
+                        SharedResources::trackedPitch = log2(x/55.0/2.0);
+                }
+                else if(rms > 0.001 && (ControllerSingleton::pitchTrack_useMPM||ControllerSingleton::pitchTrack_useDywa)){
+                    if(ControllerSingleton::pitchTrack_useMPM)
+                        x = (double)pitchMPM.getPitch(fftData);
+                    else if(ControllerSingleton::pitchTrack_useDywa)
+                        x = samplerateComp*dywapitch_computepitch(tracker, ptData, 0, fftSize);
+                    if (x > 0.0)
+                        SharedResources::trackedPitch = log2(x/55.0/2.0);
+
+
+                }
+            
+            std::cout << SharedResources::trackedPitch << "X\n";
+            std::cout << SharedResources::synthPitch << "Synth\n";
             
             
             //tested if seen by others -> CHECK
@@ -397,6 +456,11 @@ public:
 
 private:
 
+    //SineWaveSynthesis
+    float SynthBuffer [2048];
+    double SynthPosition = 0.0;
+    double SynthVolume = 0.0;
+    
     //volumeFade
     double fadeVolume = 0.0;
     bool freshStart = true;

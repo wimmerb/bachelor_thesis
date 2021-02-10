@@ -36,7 +36,7 @@ void MainComponent::paint(Graphics& g){}
 
 void MainComponent::handleInformation(const String & s){
     if( s == "SwitchToGameView"){
-        removeChildComponent(mainMenu.get());
+        removeChildComponent(mainMenu.get()); //hier fehlt evtl mainMenu delete
         SharedResources::init();
         analyser.reset(new AnalyserComponent);
         visuMaster.reset(new VisuMaster());

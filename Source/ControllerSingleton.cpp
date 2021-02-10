@@ -61,7 +61,7 @@ bool ControllerSingleton::chords_visualizeAsDots = true;
 bool ControllerSingleton::chords_visualizeAsKeys = false;
 bool ControllerSingleton::chords_visualizeWithColours = true;
 bool ControllerSingleton::chords_fadeOutHorizontal = false;
-bool ControllerSingleton::chords_visualizeGuidelines = true;
+bool ControllerSingleton::chords_visualizeGuidelines = false;
 bool ControllerSingleton::chords_BlockMovement = false;
 bool ControllerSingleton::chords_ShowScale = true;
 
@@ -73,14 +73,14 @@ bool ControllerSingleton::basicP_visualizeTransparent = true;
 float ControllerSingleton::basicp_ScreenPortion = 0.4f;
 
 //PitchVisualisation
-bool ControllerSingleton::pitch_Visualize = true;
+bool ControllerSingleton::pitch_Visualize = false;
 bool ControllerSingleton::pitch_visualizeGraph = false;
 bool ControllerSingleton::pitch_visualizeBubble = false;
 bool ControllerSingleton::pitch_visualizeKeys = true;
 bool ControllerSingleton::pitch_wrapAround = true;
 bool ControllerSingleton::pitch_follow = false;
 //PitchTracking
-bool ControllerSingleton::pitchTrack_useDywa = true;
+bool ControllerSingleton::pitchTrack_useDywa = false;
 bool ControllerSingleton::pitchTrack_useMPM = false;
 //==========================================================================
 //BASICCONTROL

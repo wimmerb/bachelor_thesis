@@ -32,3 +32,8 @@ int SharedResources::sampleCountOfSong = 0;
 
 //Functionality for CountIn
 bool SharedResources::countIn = true;
+
+
+//Synth
+float SharedResources::synthPitch = 1.0f;
+bool SharedResources::synthIsPlaying = false;

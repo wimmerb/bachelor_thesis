@@ -20,9 +20,6 @@ namespace BinaryData
     extern const char*   SONGS_VariousChordTypes_json;
     const int            SONGS_VariousChordTypes_jsonSize = 675;
 
-    extern const char*   VISU_wallpaperbro_jpeg;
-    const int            VISU_wallpaperbro_jpegSize = 1322568;
-
     extern const char*   SONGS_1625_json;
     const int            SONGS_1625_jsonSize = 1028;
 
@@ -33,7 +30,7 @@ namespace BinaryData
     const int            SONGS_1625_wavSize = 2822444;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 8;
+    const int namedResourceListSize = 7;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

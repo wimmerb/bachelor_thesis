@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="Bt6tNr" name="bachelor_thesis" projectType="guiapp" jucerVersion="5.4.3"
-              maxBinaryFileSize="20971520">
+              maxBinaryFileSize="20971520" defines="JUCE_OPENGL3=1" displaySplashScreen="1">
   <MAINGROUP id="R66v5n" name="bachelor_thesis">
     <GROUP id="{228C2AC8-9CFF-4545-F7A1-C4D1B0F09AB3}" name="bin">
       <FILE id="VpDnd0" name="SONGS_ModalInterchange.wav" compile="0" resource="1"
-            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.wav"/>
+            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.wav"
+            xcodeResource="1"/>
       <FILE id="lnYaWE" name="SONGS_ModalInterchange.json" compile="0" resource="1"
-            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.json"/>
+            file="SongFolders/ModalInterchange/SONGS_ModalInterchange.json"
+            xcodeResource="1"/>
       <FILE id="qxuE8q" name="SONGS_VariousChordTypes.wav" compile="0" resource="1"
-            file="SongFolders/ChordSong/SONGS_VariousChordTypes.wav"/>
+            file="SongFolders/ChordSong/SONGS_VariousChordTypes.wav" xcodeResource="1"/>
       <FILE id="D79QAc" name="SONGS_VariousChordTypes.json" compile="0" resource="1"
-            file="SongFolders/ChordSong/SONGS_VariousChordTypes.json"/>
-      <FILE id="eynqAO" name="VISU_wallpaperbro.jpeg" compile="0" resource="1"
-            file="../VISU_wallpaperbro.jpeg"/>
-      <FILE id="q9xZev" name="SONGS_1625.json" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.json"/>
+            file="SongFolders/ChordSong/SONGS_VariousChordTypes.json" xcodeResource="1"/>
+      <FILE id="q9xZev" name="SONGS_1625.json" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.json"
+            xcodeResource="1"/>
       <FILE id="CT7ZA8" name="AUDIO_Stick_Count.wav" compile="0" resource="1"
-            file="../AUDIO_Stick_Count.wav"/>
-      <FILE id="APPeg8" name="SONGS_1625.wav" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.wav"/>
+            file="../AUDIO_Stick_Count.wav" xcodeResource="1"/>
+      <FILE id="APPeg8" name="SONGS_1625.wav" compile="0" resource="1" file="SongFolders/1625/SONGS_1625.wav"
+            xcodeResource="1"/>
     </GROUP>
     <GROUP id="{D472E6FD-5822-732D-AEF1-78C2A98AA98C}" name="Source">
       <FILE id="htQmay" name="MainMenu.h" compile="0" resource="0" file="Source/MainMenu.h"/>
@@ -27,6 +29,8 @@
             file="Source/MainComponent.cpp"/>
       <GROUP id="{2FF857C0-0091-6A48-9DFE-B715AFFA4AD2}" name="New Group"/>
       <GROUP id="{72409CF6-86F0-7376-7CBD-ADC41CE25CA7}" name="AudioClasses">
+        <FILE id="MBPjR2" name="PitchDetectorComponent.h" compile="0" resource="0"
+              file="Source/PitchDetectorComponent.h"/>
         <FILE id="wicRmj" name="dywapitchtrack.cpp" compile="1" resource="0"
               file="Source/dywapitchtrack.cpp"/>
         <FILE id="rpalFV" name="dywapitchtrack.h" compile="0" resource="0"
@@ -90,6 +94,30 @@
         <MODULEPATH id="audio_fft" path="../../modules_JUCE"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <XCODE_IPHONE targetFolder="Builds/iOS" microphonePermissionNeeded="1" iPadScreenOrientation="UIInterfaceOrientationPortrait"
+                  iosScreenOrientation="UIInterfaceOrientationPortrait">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="pitch_detector"/>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_cryptography"/>
+        <MODULEPATH id="juce_core"/>
+        <MODULEPATH id="juce_audio_utils"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_basics"/>
+        <MODULEPATH id="audio_fft"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="audio_fft" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

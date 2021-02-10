@@ -89,6 +89,7 @@ GameMenu::GameMenu()
     addAndMakeVisible (burgerButton);
     addAndMakeVisible (playPauseButton);
     addAndMakeVisible (stopButton);
+    
 }
 
 GameMenu::~GameMenu()

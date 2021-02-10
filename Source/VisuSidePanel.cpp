@@ -14,6 +14,7 @@
 VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
     : SidePanel(title, width, positionOnLeft) {
     
+        setOpaque(true);
         highlightBasicPiano.setToggleState(ControllerSingleton::basicp_highlightBasicPiano, NotificationType::dontSendNotification);
         basicPianoVisualizeWholeScale.setToggleState(!ControllerSingleton::basicp_visualizeWholeScale, NotificationType::dontSendNotification);
         basicPianoVisualizeWithColours.setToggleState(ControllerSingleton::basicP_visualizeWithColours, NotificationType::dontSendNotification);
@@ -106,12 +107,11 @@ VisuSidePanel::VisuSidePanel(StringRef title, int width, bool positionOnLeft)
         pitchVisualizeBubbles.setRadioGroupId(1001);
         pitchVisualizeKeys.setRadioGroupId(1001);
         
-        pitchTrackUseDywa.setRadioGroupId(1002);
-        pitchTrackUseMPM.setRadioGroupId(1002);
+//        pitchTrackUseDywa.setRadioGroupId(1002);
+//        pitchTrackUseMPM.setRadioGroupId(1002);
         
         pitchFollow.setRadioGroupId(1003);
         pitchWrapAround.setRadioGroupId(1003);
-        
 };
 
 VisuSidePanel::~VisuSidePanel(){};

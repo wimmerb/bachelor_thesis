@@ -20,11 +20,14 @@
 
 VisuMaster::VisuMaster(){
     
+    setOpaque(true);
     addAndMakeVisible(gameMenu);
     gameMenu.informParent = [this](const String & s){receiveFromGameMenu(s);};
+    //gameMenu.setOpaque(true);
     
     visuSidePanel.reset(new VisuSidePanel("Visualisation-Settings", 300, false));
     addAndMakeVisible(*visuSidePanel);
+    //visuSidePanel->setOpaque(true);
     // Make sure you set the size of the component after
     // you add any child components.
     
@@ -51,9 +54,13 @@ VisuMaster::VisuMaster(){
 
     currMouseY = getHeight()/2.0f;
     
-    openGLContext.attachTo (*this);
-    
+    #if !JUCE_IOS
+    openGLContext.setOpenGLVersionRequired (OpenGLContext::openGL3_2);
+    openGLContext.setContinuousRepainting (false);
     openGLContext.setComponentPaintingEnabled(true);
+    openGLContext.attachTo (*this);
+    #endif
+    
 
     setFramesPerSecond(ControllerSingleton::fps);
 
@@ -78,7 +85,6 @@ VisuMaster::VisuMaster(){
     
     //File f = File("/Users/expert239/Desktop/wallpaperbro.jpeg");
     
-    backgroundImage = ImageFileFormat::loadFrom(BinaryData::VISU_wallpaperbro_jpeg, (size_t) BinaryData::VISU_wallpaperbro_jpegSize);
     
     //backgroundImage = ImageFileFormat::loadFrom(f);
     
@@ -93,7 +99,9 @@ VisuMaster::~VisuMaster()
 {
     // This shuts down the GL system and stops the rendering calls.
     //shutdownOpenGL();
+    #if JUCE_IOS
     openGLContext.detach();
+    #endif
 }
 
 void VisuMaster::receiveFromGameMenu(const String & s){
@@ -207,7 +215,10 @@ void VisuMaster::ppaint (Graphics& g){
         
         g.setColour(Colours::black);//TODO WTF
         //g.fillAll(Colours::grey);
-        g.drawImage(backgroundImage, Rectangle<float>(0, 0, width*ControllerSingleton::basicp_ScreenPortion, height));
+        
+        //g.drawImage(backgroundImage, Rectangle<float>(0, 0, width*ControllerSingleton::basicp_ScreenPortion, height));
+        g.setColour (Colours::grey);
+        g.fillRect (Rectangle<float> (0, 0, width*ControllerSingleton::basicp_ScreenPortion, height));
         chordVisualizer->visualizeBasicPiano(visu_lowerBound, visu_range, g, (float)height, (float)width);
         
         
@@ -319,16 +330,35 @@ void VisuMaster::createNoteText(float visu_lB, float visu_r, Graphics& g, float 
 }
 
 //==============================================================================
-
-void VisuMaster::renderOpenGL(){}
-void VisuMaster::newOpenGLContextCreated(){}
-void VisuMaster::openGLContextClosing(){}
+/
+//void VisuMaster::renderOpenGL(){}
+//void VisuMaster::newOpenGLContextCreated(){}
+//void VisuMaster::openGLContextClosing(){}
 
 //==============================================================================
 void VisuMaster::mouseDrag(const MouseEvent& event)
 {
+    currMouseY = (float)(event.getPosition().getY());
+    SharedResources::synthPitch = visu_lowerBound + (1.0f-(currMouseY/getHeight()))*visu_range;
+    SharedResources::synthIsPlaying = true;
+}
+
+void VisuMaster::mouseUp(const MouseEvent& event)
+{
+    SharedResources::synthIsPlaying = false;
+}
+
+void VisuMaster::mouseDown(const MouseEvent& event)
+{
+    SharedResources::synthIsPlaying = true;
+}
+
+void VisuMaster::mouseMove(const MouseEvent& event)
+{
     //if(!mouseExtd)
     currMouseY = (float)(event.getPosition().getY());
+    
+    SharedResources::synthPitch = visu_lowerBound + (1.0f-(currMouseY/getHeight()))*visu_range;
 }
 //==============================================================================
 
@@ -358,3 +388,4 @@ double VisuMaster::now_ms(void) {
     return 1000.0 * res.tv_sec + (double) res.tv_nsec / 1e6;
 
 }
+

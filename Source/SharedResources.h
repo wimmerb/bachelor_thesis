@@ -32,6 +32,9 @@ public:
     //Functionality for Counting in
     static bool countIn;
     
+    //Synth
+    static float synthPitch;
+    static bool synthIsPlaying;
     
     
 private:
