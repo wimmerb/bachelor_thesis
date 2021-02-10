@@ -1,6 +1,6 @@
 # bachelor_thesis
 
-For my thesis at TU Munich I did an interactive jazz improvisation learning application. It visualises an instrument's pitch (or you can also click on the screen for synthesized playing) together with a visual represenation of the harmonic model underlying for a specific piece. The player is now able to improvise over a backing track and is visually aided in the choice of notes.
+For my thesis at TU Munich I did an interactive jazz improvisation learning application. It visualises an instrument's pitch (or you can also click on the screen for synthesized playing) together with a visual represenation of the harmonic model underlying for a specific piece. The player is now able to improvise over a backing track and is visually aided in the choice of notes. [**See here for the thesis pdf**](https://github.com/wimmerb/bachelor_thesis/blob/master/thesis.pdf)
 
 ## Example
 Here is a screenshot. For a more interesting demo, please download [**this video**](https://github.com/wimmerb/bachelor_thesis/blob/master/videos/screen_recording_small.mov)
