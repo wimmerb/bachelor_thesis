@@ -74,7 +74,7 @@ private:
     
     
 //    void renderOpenGL() override;
-    #if JUCE_IOS
+    #if !JUCE_IOS
     OpenGLContext openGLContext;
     #endif
 //    void newOpenGLContextCreated() override;

@@ -99,7 +99,7 @@ VisuMaster::~VisuMaster()
 {
     // This shuts down the GL system and stops the rendering calls.
     //shutdownOpenGL();
-    #if JUCE_IOS
+    #if !JUCE_IOS
     openGLContext.detach();
     #endif
 }
@@ -330,7 +330,7 @@ void VisuMaster::createNoteText(float visu_lB, float visu_r, Graphics& g, float 
 }
 
 //==============================================================================
-/
+
 //void VisuMaster::renderOpenGL(){}
 //void VisuMaster::newOpenGLContextCreated(){}
 //void VisuMaster::openGLContextClosing(){}
