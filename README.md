@@ -7,7 +7,7 @@ Here is a screenshot. For a more interesting demo, please download [**this video
 <img src="/Screenshots/example.png" width="500">
 
 
-## JUCE
+## Build Instructions
 
 This application is intended to be cross-platform for iOS, Android and MacOS, therefore
-MidiSnapPad is built with the cross-platform framework [JUCE](https://juce.com/).
+MidiSnapPad is built with the cross-platform framework [JUCE](https://juce.com/). You can build this project using the [Projucer](https://juce.com/discover/projucer) and [JUCE v5.4.3](https://github.com/juce-framework/JUCE/releases/tag/5.4.3). Make sure to give microphone permissions.
